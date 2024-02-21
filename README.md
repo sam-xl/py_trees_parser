@@ -46,3 +46,4 @@ ros-humble
 ros-humble-py-trees
 ros-humble-py-trees-ros-interfaces
 ros-humble-py-trees-ros
+ros-humble-py-trees-ros-tutorials
