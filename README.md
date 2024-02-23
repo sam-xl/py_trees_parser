@@ -42,8 +42,8 @@ behavior_tree = parser.parse()
 Use the behavior tree as needed in your application.
 
 ## Dependencies
-ros-humble
-ros-humble-py-trees
-ros-humble-py-trees-ros-interfaces
-ros-humble-py-trees-ros
-ros-humble-py-trees-ros-tutorials
+* ros-humble
+* ros-humble-py-trees
+* ros-humble-py-trees-ros-interfaces
+* ros-humble-py-trees-ros
+* ros-humble-py-trees-ros-tutorials
