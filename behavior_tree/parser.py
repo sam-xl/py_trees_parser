@@ -1,11 +1,5 @@
-from os.path import isfile
-
 import importlib
-import py_trees
 from xml.etree import ElementTree
-from rclpy import logging
-
-import behavior_tree.utils
 
 
 class BTParseError(Exception):
@@ -14,7 +8,7 @@ class BTParseError(Exception):
 
 def is_float(value: str) -> bool:
     # TODO: handle scientific notation
-    return value.lstrip('-').replace('.','',1).isdigit()
+    return value.lstrip("-").replace(".", "", 1).isdigit()
 
 
 class BTParser:
@@ -24,13 +18,13 @@ class BTParser:
 
     def _get_handle(self, value: str):
         self.logger.debug("Getting handle")
-        module_name, obj_name = value.rsplit('.', 1)
+        module_name, obj_name = value.rsplit(".", 1)
         module = importlib.import_module(module_name)
         handle = getattr(module, obj_name)
         self.logger.debug(f"{module_name = }, {obj_name = }, {handle = }")
         return module_name, handle
 
-    def _string_or_num(self, value : str) -> int | float | str:
+    def _string_or_num(self, value: str) -> int | float | str:
         value = value.strip()
         if value.isnumeric():
             value = int(value)
@@ -44,11 +38,11 @@ class BTParser:
     def _get_kwargs(self, params: str) -> dict:
         kwargs = dict()
         try:
-            for item in params.split(','):
+            for item in params.split(","):
                 if len(item) == 0:
                     continue
 
-                key, value = item.split('=')
+                key, value = item.split("=")
                 value = self._string_or_num(value)
 
                 kwargs[key.strip()] = value
@@ -73,9 +67,9 @@ class BTParser:
 
             try:
                 # check if the value is a function call
-                if '(' in value:
+                if "(" in value:
                     self.logger.debug(f"Possible function {value}")
-                    func, params = value.rsplit('(', 1)
+                    func, params = value.rsplit("(", 1)
                     # get the function handle
                     _, handle = self._get_handle(func)
                     self.logger.debug(f"{handle = }")
@@ -124,14 +118,11 @@ class BTParser:
         return node
 
     def _build_tree(self, xml_node: ElementTree):
-        if xml_node == None:
+        if xml_node is None:
             self.logger.warn("Received an xml_node of type None this shouldn't happen")
             return None
 
         self.logger.debug(f"{xml_node.tag = }, {xml_node.attrib = }")
-
-        # build the actual node
-        # node = self.create_node(xml_node.tag, xml_node.attrib)
 
         # we only need to find children if the node is a composite
         children = list()
@@ -139,14 +130,12 @@ class BTParser:
             child = self._build_tree(child_xml_node)
             children.append(child)
 
+        # build the actual node
         node = self._create_node(xml_node.tag, children, xml_node.attrib)
 
         return node
 
     def parse(self):
-        if isfile(self.file):
-            xml = ElementTree.parse(self.file)
-        else:
-            xml = ElementTree.fromstring(self.file)
+        xml = ElementTree.parse(self.file)
 
-        return self._build_tree(xml)
+        return self._build_tree(xml.getroot())
