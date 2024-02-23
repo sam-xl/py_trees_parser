@@ -1,9 +1,9 @@
-from rclpy import logging
+import os
 
 from ament_index_python.packages import get_package_share_directory
-from behavior_tree.parser import BTParser
+from rclpy import logging
 
-import os
+from behavior_tree.parser import BTParser
 
 SHARE_DIR = get_package_share_directory("behavior_tree")
 
