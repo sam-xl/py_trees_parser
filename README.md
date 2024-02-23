@@ -46,4 +46,3 @@ Use the behavior tree as needed in your application.
 * ros-humble-py-trees
 * ros-humble-py-trees-ros-interfaces
 * ros-humble-py-trees-ros
-* ros-humble-py-trees-ros-tutorials
