@@ -19,6 +19,9 @@ setup(
     license="BSD",
     tests_require=["pytest"],
     entry_points={
-        "console_scripts": ["behavior_tree = behavior_tree.behavior_tree:main"],
+        "console_scripts": [
+            "behavior_tree = behavior_tree.behavior_tree:main",
+            "inspection_tree = behavior_tree.inspection_tree:main",
+        ],
     },
 )
