@@ -1,10 +1,10 @@
 import os
+import unittest
 
-from ament_index_python.packages import get_package_share_directory
 import py_trees_ros
 import rclpy
+from ament_index_python.packages import get_package_share_directory
 from rclpy import logging
-import unittest
 
 from behavior_tree.parser import BTParser
 
