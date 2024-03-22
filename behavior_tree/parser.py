@@ -18,6 +18,9 @@ class BTParser:
 
     def _get_handle(self, value: str):
         self.logger.debug("Getting handle")
+        if value == "":
+            return "", None
+
         module_name, obj_name = value.rsplit(".", 1)
         try:
             module = importlib.import_module(module_name)
