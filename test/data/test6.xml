@@ -7,7 +7,7 @@
     </py_trees.composites.Sequence>
     <py_trees.composites.Selector name="Tasks" memory="False">
         <py_trees.decorators.EternalGuard name="Battery Low?" condition="behavior_tree.utils.check_battery_low_on_blackboard" blackboard_keys="{'battery_low_warning'}">
-            <behavior_tree.behaviours.FlashLedStrip name="Flash Red" colour="red" />
+            <behavior_tree.test_behaviors.FlashLedStrip name="Flash Red" colour="red" />
         </py_trees.decorators.EternalGuard>
         <py_trees.composites.Sequence name="Scan" memory="False">
             <py_trees.behaviours.CheckBlackboardVariableValue name="Scan?" check="py_trees.common.ComparisonExpression(variable='event_scan_button', value=True, operator=operator.eq)" />
@@ -16,13 +16,13 @@
                     <py_trees.behaviours.CheckBlackboardVariableValue name="Scan?" check="py_trees.common.ComparisonExpression(variable='event_scan_button', value=True, operator=operator.eq)" />
                 </py_trees.decorators.SuccessIsRunning>
                 <py_trees.composites.Parallel name="Scanning" policy="py_trees.common.ParallelPolicy.SuccessOnOne()">
-                    <behavior_tree.behaviours.ScanContext name="Context Switch" />
+                    <behavior_tree.test_behaviors.ScanContext name="Context Switch" />
                     <py_trees_ros.actions.ActionClient name="Rotate" action_type="py_trees_actions.Rotate" action_name="rotate" action_goal="py_trees_actions.Rotate.Goal()" generate_feedback_message="lambda msg: '{:.2f}%%'.format(msg.feedback.percentage_completed)" />
-                    <behavior_tree.behaviours.FlashLedStrip name="Flash Blue" colour="blue" />
+                    <behavior_tree.test_behaviors.FlashLedStrip name="Flash Blue" colour="blue" />
                 </py_trees.composites.Parallel>
             </py_trees.composites.Selector>
             <py_trees.composites.Parallel name="Celebrate" policy="py_trees.common.ParallelPolicy.SuccessOnOne()">
-                <behavior_tree.behaviours.FlashLedStrip name="Flash Green" colour="green" />
+                <behavior_tree.test_behaviors.FlashLedStrip name="Flash Green" colour="green" />
                 <py_trees.timers.Timer name="Pause" duration="3.0" />
             </py_trees.composites.Parallel>
         </py_trees.composites.Sequence>
