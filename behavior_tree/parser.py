@@ -18,10 +18,18 @@ class BTParser:
 
     def _get_handle(self, value: str):
         self.logger.debug("Getting handle")
+        if value == "":
+            return "", None
+
         module_name, obj_name = value.rsplit(".", 1)
-        module = importlib.import_module(module_name)
-        handle = getattr(module, obj_name)
-        self.logger.debug(f"{module_name = }, {obj_name = }, {handle = }")
+        try:
+            module = importlib.import_module(module_name)
+            handle = getattr(module, obj_name)
+        except ModuleNotFoundError:
+            module_name, handle = self._get_handle(module_name)
+            handle = getattr(handle, obj_name)
+
+        self.logger.info(f"{module_name = }, {obj_name = }, {handle = }")
         return module_name, handle
 
     def _string_or_num(self, value: str) -> int | float | str:
@@ -70,6 +78,7 @@ class BTParser:
                 if "(" in value:
                     self.logger.debug(f"Possible function {value}")
                     func, params = value.rsplit("(", 1)
+                    params = params[:-1]  # remove final parenthesis
                     # get the function handle
                     _, handle = self._get_handle(func)
                     self.logger.debug(f"{handle = }")
