@@ -16,7 +16,7 @@ It contains behaviors that are developed for Thermoplast project but could be re
 * `pause` ([py_trees.timers.Timer]): A blocking timer behavior.
 
 ### Parsing
-    py-trees-render -b behavior_tree.inspection_tree.inspection_create_root
+    py-trees-render -b behavior_tree.thermoplast_tree.create_tree
 
 ## XML Parser
 The Behavior Tree Parser is a Python module that allows you to parse an XML file

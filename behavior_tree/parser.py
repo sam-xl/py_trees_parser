@@ -1,5 +1,5 @@
 import importlib
-from xml.etree import ElementTree
+from xml.etree import ElementInclude, ElementTree
 
 
 class BTParseError(Exception):
@@ -146,5 +146,7 @@ class BTParser:
 
     def parse(self):
         xml = ElementTree.parse(self.file)
+
+        ElementInclude.include(xml)
 
         return self._build_tree(xml.getroot())
