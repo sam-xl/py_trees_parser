@@ -7,6 +7,7 @@
   <maintainer email="e.l.f.foster@tudelft.nl">Erich L Foster</maintainer>
   <license>Proprietary</license>
 
+  <exec_depend>ament_index_python</exec_depend>
   <exec_depend>damage_inspection_msgs</exec_depend>
   <exec_depend>py_trees_ros</exec_depend>
   <exec_depend>python3-setuptools</exec_depend>
