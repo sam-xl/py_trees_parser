@@ -1,34 +1,43 @@
 # Behavior Tree
+
 This is the SAM XL behavior tree module.
 It contains behaviors that are developed for Thermoplast project but could be reusable in other applications.
 
 ## Dependencies
-* ros-humble
-* ros-humble-py-trees
-* ros-humble-py-trees-ros-interfaces
-* ros-humble-py-trees-ros
+
+- ros-humble
+- ros-humble-py-trees
+- ros-humble-py-trees-ros-interfaces
+- ros-humble-py-trees-ros
 
 ## Behaviors
-* `image_subscriber` ([py_trees_ros.subscribers.ToBlackboard]): Subscribe to the Image message and write an Image (sensor_msgs/Image) to the blackboard.
+
+- `image_subscriber` ([py_trees_ros.subscribers.ToBlackboard]): Subscribe to the Image message and write an Image (sensor_msgs/Image) to the blackboard.
+
 ### Inspection tree behaviors
-* `get_image` ([py_trees_ros.actions.ActionClient]): Send an action goal to ([capture_image]) action server.
-* `inspect_damage` ([py_trees_ros.actions.ActionClient]): Send an action goal to ([damage_inspection]) action server.
-* `pause` ([py_trees.timers.Timer]): A blocking timer behavior.
+
+- `get_image` ([py_trees_ros.actions.ActionClient]): Send an action goal to ([capture_image]) action server.
+- `inspect_damage` ([py_trees_ros.actions.ActionClient]): Send an action goal to ([damage_inspection]) action server.
+- `pause` ([py_trees.timers.Timer]): A blocking timer behavior.
 
 ### Parsing
+
     py-trees-render -b behavior_tree.thermoplast_tree.create_tree
 
 ## XML Parser
+
 The Behavior Tree Parser is a Python module that allows you to parse an XML file
 representing a behavior tree and construct the corresponding behavior tree using
 the PyTrees library. It supports composite nodes, behavior nodes from PyTrees,
 and custom behavior nodes defined in your local library.
 
-### Usage
+### Basic Usage
+
 To use the Behavior Tree Parser, follow these steps:
 
 Create an XML file that represents your behavior tree. The XML structure should
 define the nodes and their attributes. It should be similar to the following
+
 ```xml
     <py_trees.composites.Parallel name="TutorialOne" synchronise="False">
         <py_trees.composites.Sequence name="Topics2BB" memory="False">
@@ -42,6 +51,7 @@ define the nodes and their attributes. It should be similar to the following
 ```
 
 Assuming the above is saved in `behavior_tree.xml` it can be imported via the following code:
+
 ```python
 from behavior_tree import parser
 import py_trees
@@ -55,6 +65,8 @@ xml_file = "behavior_tree.xml"
 parser = BTParse(xml_file, logger)
 behavior_tree = parser.parse()
 ```
+
+## Relevant Links
 
 <!-- links -->
 [py_trees_ros.subscribers.ToBlackboard]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.ToBlackboard
