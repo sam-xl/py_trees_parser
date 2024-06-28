@@ -15,7 +15,10 @@ setup(
         ),
         (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.yml"))),
         (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.xml"))),
-        ("share/" + package_name + "/test/data/", ["test/data/test1.xml", "test/data/test6.xml"]),
+        (
+            os.path.join("share", package_name, "test", "data"),
+            glob(os.path.join("test", "data", "*.xml")),
+        ),
     ],
     install_requires=["setuptools"],
     zip_safe=True,

@@ -1,0 +1,13 @@
+<py_trees.composites.Parallel name="TutorialOne"
+  policy="py_trees.common.ParallelPolicy.SuccessOnAll(synchronise=False)">
+  <py_trees.composites.Sequence name="Topics2BB" memory="False">
+    <py_trees_ros.battery.ToBlackboard name="Battery2BB" topic_name="/battery/state"
+      qos_profile="py_trees_ros.utilities.qos_profile_unlatched()" threshold="30.0" />
+  </py_trees.composites.Sequence>
+  <subtree xmlns:xi="http://w3.org/2001/XMLInclude">
+    <py_trees.composites.Selector name="Tasks" memory="False">
+      <py_trees.behaviours.Running name="Idle" />
+      <py_trees.behaviours.Periodic name="Flip Eggs" n="2" />
+    </py_trees.composites.Selector>
+  </subtree>
+</py_trees.composites.Parallel>
