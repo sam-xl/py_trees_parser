@@ -1,3 +1,6 @@
+import os
+from glob import glob
+
 from setuptools import find_packages, setup
 
 package_name = "behavior_tree"
@@ -14,7 +17,6 @@ setup(
             glob(os.path.join("launch", "*launch.[pxy][yma]*")),
         ),
         (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.yml"))),
-        (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.xml"))),
         (
             os.path.join("share", package_name, "test", "data"),
             glob(os.path.join("test", "data", "*.xml")),
