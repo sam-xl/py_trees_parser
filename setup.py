@@ -17,6 +17,7 @@ setup(
             glob(os.path.join("launch", "*launch.[pxy][yma]*")),
         ),
         (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.yml"))),
+        (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.xml"))),
         (
             os.path.join("share", package_name, "test", "data"),
             glob(os.path.join("test", "data", "*.xml")),
@@ -34,6 +35,7 @@ setup(
             "behavior_tree = behavior_tree.behavior_tree:main",
             "inspection_tree = behavior_tree.inspection_tree:main",
             "root_tree = behavior_tree.root_tree:main",
+            "thermoplast_tree = behavior_tree.thermoplast_tree:main",
         ],
     },
 )

@@ -14,6 +14,7 @@ def is_float(value: str) -> bool:
 class BTParser:
     def __init__(self, file: str, logger):
         self.file = file
+
         self.logger = logger
 
     def _get_handle(self, value: str):
@@ -152,6 +153,6 @@ class BTParser:
         xml = ElementTree.parse(self.file)
 
         root = xml.getroot()
-        ElementInclude.include(root)
+        ElementInclude.include(root, base_url=self.file)
 
         return self._build_tree(root)

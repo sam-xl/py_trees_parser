@@ -30,7 +30,7 @@ class TestParser(unittest.TestCase):
             assert False, f"parse raised an exception {ex}"
 
     def test_subtree(self):
-        xml = os.path.join(SHARE_DIR, "test/data/test_subtree.xml")
+        xml = os.path.join(SHARE_DIR, "test/data/test_subtree_main.xml")
         logger = logging.get_logger("subtree test")
         logger.set_level(logging.LoggingSeverity.DEBUG)
         parser = BTParser(xml, logging.get_logger("subtree test"))

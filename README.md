@@ -76,16 +76,16 @@ It is possible to include sub-trees in the xml file containing a behavior tree. 
 
 The included subtree should be a complete tree, but can only contain one root.
 It is possible to include multiple sub-trees and a sub-tree can also include
-another subtree. However, be aware that the main tree will have to reference
-its directory while the sub-tree will not. For example, if we have four
-behavior tree files in a directory like so:
+another subtree. However, be aware that the all directories are reltative to the main.
+For example, if we have four behavior tree files in a directory like so:
 
 ```
 config                                                                                                                                                                                                                                │
 ├── main.xml                                                                                                                                                                                                              │
-├── subtree1.xml                                                                                                                                                                                                             │
-├── subtree2.xml                                                                                                                                                                                                                │
-└── subtree3.xml
+└── subtree
+    ├── subtree1.xml                                                                                                                                                                                                             │
+    ├── subtree2.xml                                                                                                                                                                                                                │
+    └── subtree3.xml
 ```
 
 and the following is our main.xml
@@ -93,20 +93,20 @@ and the following is our main.xml
 ```xml
 <py_trees.composites.Parallel name="Subtree Tutorial" synchronise="False">
     <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-        <xi:include href="config/subtree1.xml" parse="xml" />
+        <xi:include href="subtree/subtree1.xml" parse="xml" />
     </subtree>
     <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-        <xi:include href="config/subtree2.xml" parse="xml" />
+        <xi:include href="subtree/subtree2.xml" parse="xml" />
     </subtree>
 </py_trees.composites.Parallel>
 ```
 
 and we then include `subtree3.xml` in `subtree1.xml` the location of
-`subtree3.xml` must be relative to `subtree1.xml`:
+`subtree3.xml` must still be relative to `main.xml`:
 
 ```xml
 <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-    <xi:include href="subtree3.xml" parse="xml" />
+    <xi:include href="subtree/subtree3.xml" parse="xml" />
 </subtree>
 ```
 

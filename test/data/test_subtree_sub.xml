@@ -1,0 +1,4 @@
+<py_trees.composites.Selector name="Tasks" memory="False">
+  <py_trees.behaviours.Running name="Idle" />
+  <py_trees.behaviours.Periodic name="Flip Eggs" n="2" />
+</py_trees.composites.Selector>
