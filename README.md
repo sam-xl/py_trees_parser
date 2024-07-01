@@ -112,7 +112,9 @@ and we then include `subtree3.xml` in `subtree1.xml` the location of
 
 ## Render a Tree
 
+```shell
     py-trees-render -b behavior_tree.thermoplast_tree.create_tree
+```
 
 ## Relevant Links
 
