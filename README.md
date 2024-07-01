@@ -110,11 +110,29 @@ and we then include `subtree3.xml` in `subtree1.xml` the location of
 </subtree>
 ```
 
-## Render a Tree
+## Running the Behavior Tree
+
+### Launch the Behavior Tree:
+
+```bash
+ros2 launch behavior_tree thermoplast.launch.py
+```
+
+### Render a Tree
 
 ```shell
     py-trees-render -b behavior_tree.thermoplast_tree.create_tree
 ```
+
+### Launch Parameters
+
+The following launch parameters apply to `thermoplast.launch.py`
+
+| Parameter Name     | Description                                     | Default Value          |
+| :---               | :---                                            | :---:                  |
+| tree_file          | Configuration containing configuration of node  | "thermoplast.xml"      |
+| rgb_image_topic    | Topic to listen to for rgb image messages       | "~/camera/image"       |
+| depth_image_topic  | Topic to listen to for rgb image messages       | "~/camera/depth/image" |
 
 ## Relevant Links
 
