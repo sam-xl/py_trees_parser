@@ -17,10 +17,6 @@ developed for Thermoplast project but could be reusable in other applications.
   the Image message and write an Image (sensor_msgs/Image) to the blackboard.
 - `MoveRobot` ([`py_trees_ros.actions.ActionClient`]): Move robot along
   waypoints.
-- `FromBlackboard` ([`py_trees_ros.behaviour.Behaviour`]): A service/client
-  interface that draws requests from the blackboard.
-- `ServiceClientFromConstant` ([`FromBlackboard`]): A convenience interface for
-  `FromBlackboard` that only ever sends the same goal.
 
 ## XML Parser
 
