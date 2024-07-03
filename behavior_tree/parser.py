@@ -1,5 +1,5 @@
 import importlib
-from xml.etree import ElementTree
+from xml.etree import ElementInclude, ElementTree
 
 
 class BTParseError(Exception):
@@ -14,6 +14,7 @@ def is_float(value: str) -> bool:
 class BTParser:
     def __init__(self, file: str, logger):
         self.file = file
+
         self.logger = logger
 
     def _get_handle(self, value: str):
@@ -29,7 +30,7 @@ class BTParser:
             module_name, handle = self._get_handle(module_name)
             handle = getattr(handle, obj_name)
 
-        self.logger.info(f"{module_name = }, {obj_name = }, {handle = }")
+        self.logger.debug(f"{module_name = }, {obj_name = }, {handle = }")
         return module_name, handle
 
     def _string_or_num(self, value: str) -> int | float | str:
@@ -133,6 +134,10 @@ class BTParser:
 
         self.logger.debug(f"{xml_node.tag = }, {xml_node.attrib = }")
 
+        if xml_node.tag.lower() == "subtree":
+            self.logger.debug("Found subtree")
+            return self._build_tree(xml_node[0])
+
         # we only need to find children if the node is a composite
         children = list()
         for child_xml_node in xml_node:
@@ -147,4 +152,7 @@ class BTParser:
     def parse(self):
         xml = ElementTree.parse(self.file)
 
-        return self._build_tree(xml.getroot())
+        root = xml.getroot()
+        ElementInclude.include(root, base_url=self.file)
+
+        return self._build_tree(root)

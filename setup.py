@@ -1,16 +1,27 @@
+import os
+from glob import glob
+
 from setuptools import find_packages, setup
 
 package_name = "behavior_tree"
 
 setup(
     name=package_name,
-    version="0.0.2",
+    version="0.0.3",
     packages=find_packages(exclude=["test"]),
     data_files=[
-        ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
-        ("share/" + package_name, ["package.xml"]),
-        ("share/" + package_name + "/config/", ["config/thermoplast.xml"]),
-        ("share/" + package_name + "/test/data/", ["test/data/test1.xml", "test/data/test6.xml"]),
+        ("share/ament_index/resource_index/packages", [os.path.join("resource", package_name)]),
+        (os.path.join("share/", package_name), ["package.xml"]),
+        (
+            os.path.join("share", package_name, "launch"),
+            glob(os.path.join("launch", "*launch.[pxy][yma]*")),
+        ),
+        (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.yml"))),
+        (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.xml"))),
+        (
+            os.path.join("share", package_name, "test", "data"),
+            glob(os.path.join("test", "data", "*.xml")),
+        ),
     ],
     install_requires=["setuptools"],
     zip_safe=True,
@@ -24,6 +35,7 @@ setup(
             "behavior_tree = behavior_tree.behavior_tree:main",
             "inspection_tree = behavior_tree.inspection_tree:main",
             "root_tree = behavior_tree.root_tree:main",
+            "thermoplast_tree = behavior_tree.thermoplast_tree:main",
         ],
     },
 )

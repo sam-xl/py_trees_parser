@@ -29,6 +29,17 @@ class TestParser(unittest.TestCase):
         except Exception as ex:
             assert False, f"parse raised an exception {ex}"
 
+    def test_subtree(self):
+        xml = os.path.join(SHARE_DIR, "test/data/test_subtree_main.xml")
+        logger = logging.get_logger("subtree test")
+        logger.set_level(logging.LoggingSeverity.DEBUG)
+        parser = BTParser(xml, logging.get_logger("subtree test"))
+        try:
+            root = parser.parse()
+            py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
+        except Exception as ex:
+            assert False, f"parse raised an exception {ex}"
+
     def test_complex_tree(self):
         xml = os.path.join(SHARE_DIR, "test/data/test6.xml")
         logger = logging.get_logger("parse_test")
