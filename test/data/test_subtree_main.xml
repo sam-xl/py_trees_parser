@@ -1,4 +1,4 @@
-<py_trees.composites.Parallel name="TutorialOne"
+<py_trees.composites.Parallel name="SubtreeMain"
   policy="py_trees.common.ParallelPolicy.SuccessOnAll(synchronise=False)">
   <py_trees.composites.Sequence name="Topics2BB" memory="False">
     <py_trees_ros.battery.ToBlackboard name="Battery2BB" topic_name="/battery/state"
