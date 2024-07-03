@@ -5,11 +5,15 @@ developed for Thermoplast project but could be reusable in other applications.
 
 ## Dependencies
 
+- damage_inspection_msgs
+- ElementTree
+- geometry_msgs
 - ros-humble
 - ros-humble-py-trees
 - ros-humble-py-trees-ros-interfaces
 - ros-humble-py-trees-ros
-- ElementTree
+- sensor_msgs
+- std_srvs
 
 ## Behaviors
 
