@@ -17,10 +17,8 @@ developed for Thermoplast project but could be reusable in other applications.
 
 ## Behaviors
 
-- `ImageSubscriber` ([`py_trees_ros.subscribers.ToBlackboard`]): Subscribe to
-  the Image message and write an Image (sensor_msgs/Image) to the blackboard.
-- `MoveRobot` ([`py_trees_ros.actions.ActionClient`]): Move robot along
-  waypoints.
+- `MoveToObject` ([`py_trees.behaviour.Behaviour`]): Move to an object of interest.
+- `RobotTrajectory` ([`py_trees.behaviour.Behaviour`]): Move the robot to the desired target.
 
 ## XML Parser
 
