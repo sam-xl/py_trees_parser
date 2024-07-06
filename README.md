@@ -119,7 +119,7 @@ ros2 launch behavior_tree thermoplast.launch.py
 ### Render a Tree
 
 ```shell
-    py-trees-render -b behavior_tree.behavior_tree.create_tree
+    py-trees-render -b behavior_tree.behavior_tree.thermoplast_tree
 ```
 
 ### Launch Parameters
