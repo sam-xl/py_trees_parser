@@ -33,9 +33,6 @@ setup(
     entry_points={
         "console_scripts": [
             "behavior_tree = behavior_tree.behavior_tree:main",
-            "inspection_tree = behavior_tree.inspection_tree:main",
-            "root_tree = behavior_tree.root_tree:main",
-            "thermoplast_tree = behavior_tree.thermoplast_tree:main",
         ],
     },
 )
