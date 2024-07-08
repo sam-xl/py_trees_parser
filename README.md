@@ -8,6 +8,9 @@ developed for Thermoplast project but could be reusable in other applications.
 - damage_inspection_msgs
 - ElementTree
 - geometry_msgs
+- object_segmentation
+- object_segmentation_msgs
+- python-pcl
 - ros-humble
 - ros-humble-py-trees
 - ros-humble-py-trees-ros-interfaces
@@ -15,10 +18,35 @@ developed for Thermoplast project but could be reusable in other applications.
 - sensor_msgs
 - std_srvs
 
+## blackboards
+- `State`: This blackboard contains the keys related to the state of the robot, which includes
+  the robot node and the state.
+- `Perception`: This blackboard contains the keys related to the perception stack of the robot,
+  which includes images, point clouds, objects, etc.
+
 ## Behaviors
 
 - `MoveToObject` ([`py_trees.behaviour.Behaviour`]): Move to an object of interest.
 - `RobotTrajectory` ([`py_trees.behaviour.Behaviour`]): Move the robot to the desired target.
+- `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
+  `perception` blackboard.
+- `SaveImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
+  drive.
+- `SaveDepthImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
+  `perception` blackboard.
+- `SaveDepthImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image for "camera"
+  to dive.
+- `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point cloud for "camera" to
+  `perception` blackboard.
+
+## Actions
+
+- `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action client class that
+  setups most steps that are necessary for an ActionClient. This requires that any derived class
+  create a `get_goal` function, which creates the specific goal needed for the desired action.
+- `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
+  object detections from the `ObjectDetection` action server and then saves them to the
+  `perception` blackboard.
 
 ## XML Parser
 
