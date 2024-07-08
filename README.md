@@ -15,6 +15,7 @@ developed for Thermoplast project but could be reusable in other applications.
 - ros-humble-py-trees
 - ros-humble-py-trees-ros-interfaces
 - ros-humble-py-trees-ros
+- ros2_numpy
 - sensor_msgs
 - std_srvs
 
