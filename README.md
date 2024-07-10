@@ -126,11 +126,15 @@ ros2 launch behavior_tree thermoplast.launch.py
 
 The following launch parameters apply to `thermoplast.launch.py`
 
-| Parameter Name     | Description                                     | Default Value          |
-| :---               | :---                                            | :---:                  |
-| tree_file          | Configuration containing configuration of node  | "thermoplast.xml"      |
-| rgb_image_topic    | Topic to listen to for rgb image messages       | "~/camera/image"       |
-| depth_image_topic  | Topic to listen to for rgb image messages       | "~/camera/depth/image" |
+| Parameter Name                  | Description                                     | Default Value                   |
+| :---                            | :---                                            | :---:                           |
+| config_file                     | Configuration containing configuration of node  | "thermoplast.yml"               |
+| webcam_image_topic              | Topic to listen to for webcam image messages    | "/webcam/camera/color/image"    |
+| realsense_image_topic           | Topic to listen to for realsense image messages | "/realsense/camera/color/image" |
+| depth_image_topic               | Topic to listen to for depth image messages     | "/realsense/camera/depth/image" |
+| pointcloud_topic                | Topic to listen to for point cloud messages     | "/realsense/camera/depth/image" |
+| joint_state_topic               | Topic to listen to for joint state messages     | "~/joint_states"                |
+| compute_cartesian_path_topic    | Topic to publich cartesian path messages too    | "~/compute_cartesian_path"      |
 
 ## Relevant Links
 
