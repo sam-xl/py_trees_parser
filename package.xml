@@ -12,7 +12,9 @@
   <exec_depend>damage_inspection_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>moveit_msgs</exec_depend>
+  <exec_depend>object_segmentation_msgs</exec_depend>
   <exec_depend>py_trees_ros</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
   <exec_depend>python3-setuptools</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2_numpy</exec_depend>
