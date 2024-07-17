@@ -44,7 +44,7 @@ developed for Thermoplast project but could be reusable in other applications.
 
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action client class that
   setups most steps that are necessary for an ActionClient. This requires that any derived class
-  create a `get_goal` function, which creates the specific goal needed for the desired action.
+  create a `get_request` function, which creates the specific goal needed for the desired action.
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
   object detections from the `ObjectDetection` action server and then saves them to the
   `perception` blackboard.
