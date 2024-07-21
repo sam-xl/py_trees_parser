@@ -48,6 +48,14 @@ developed for Thermoplast project but could be reusable in other applications.
   `perception` blackboard.
 - `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
 
+## Services
+
+- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract service client class that sets
+  up most of the steps that are necessary for a ServiceClient. This requires that any derived class
+  create a `get_request` function, which creates the specific goal needed for the desired service,
+  additionally it requires a `validate_service_response` function that will eventually set `self.success`
+  depending if the response from the service was valid or not.
+
 ## XML Parser
 
 The Behavior Tree Parser (`BTParse`) is a Python module that allows you to
