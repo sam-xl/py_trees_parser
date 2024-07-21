@@ -27,8 +27,6 @@ developed for Thermoplast project but could be reusable in other applications.
 
 ## Behaviors
 
-- `MoveToObject` ([`py_trees.behaviour.Behaviour`]): Move to an object of interest.
-- `RobotTrajectory` ([`py_trees.behaviour.Behaviour`]): Move the robot to the desired target.
 - `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
   `perception` blackboard.
 - `SaveImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
@@ -43,11 +41,12 @@ developed for Thermoplast project but could be reusable in other applications.
 ## Actions
 
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action client class that
-  setups most steps that are necessary for an ActionClient. This requires that any derived class
+  sets up most of the steps that are necessary for an ActionClient. This requires that any derived class
   create a `get_request` function, which creates the specific goal needed for the desired action.
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
   object detections from the `ObjectDetection` action server and then saves them to the
   `perception` blackboard.
+- `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
 
 ## XML Parser
 
