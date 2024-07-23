@@ -8,19 +8,45 @@ developed for Thermoplast project but could be reusable in other applications.
 - damage_inspection_msgs
 - ElementTree
 - geometry_msgs
+- object_segmentation
+- object_segmentation_msgs
+- python-pcl
 - ros-humble
 - ros-humble-py-trees
 - ros-humble-py-trees-ros-interfaces
 - ros-humble-py-trees-ros
+- ros2_numpy
 - sensor_msgs
 - std_srvs
 
+## blackboards
+- `State`: This blackboard contains the keys related to the state of the robot, which includes
+  the robot node and the state.
+- `Perception`: This blackboard contains the keys related to the perception stack of the robot,
+  which includes images, point clouds, objects, etc.
+
 ## Behaviors
 
-- `ImageSubscriber` ([`py_trees_ros.subscribers.ToBlackboard`]): Subscribe to
-  the Image message and write an Image (sensor_msgs/Image) to the blackboard.
-- `MoveRobot` ([`py_trees_ros.actions.ActionClient`]): Move robot along
-  waypoints.
+- `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
+  `perception` blackboard.
+- `SaveImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
+  drive.
+- `SaveDepthImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
+  `perception` blackboard.
+- `SaveDepthImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image for "camera"
+  to dive.
+- `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point cloud for "camera" to
+  `perception` blackboard.
+
+## Actions
+
+- `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action client class that
+  sets up most of the steps that are necessary for an ActionClient. This requires that any derived class
+  create a `get_request` function, which creates the specific goal needed for the desired action.
+- `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
+  object detections from the `ObjectDetection` action server and then saves them to the
+  `perception` blackboard.
+- `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
 
 ## XML Parser
 
@@ -121,18 +147,25 @@ ros2 launch behavior_tree thermoplast.launch.py
 ### Render a Tree
 
 ```shell
-    py-trees-render -b behavior_tree.thermoplast_tree.create_tree
+    py-trees-render -b behavior_tree.behavior_tree.thermoplast_tree
 ```
 
 ### Launch Parameters
 
 The following launch parameters apply to `thermoplast.launch.py`
 
-| Parameter Name     | Description                                     | Default Value          |
-| :---               | :---                                            | :---:                  |
-| tree_file          | Configuration containing configuration of node  | "thermoplast.xml"      |
-| rgb_image_topic    | Topic to listen to for rgb image messages       | "~/camera/image"       |
-| depth_image_topic  | Topic to listen to for rgb image messages       | "~/camera/depth/image" |
+| Parameter Name               | Description                                      | Default Value                   |
+| :---                         | :---                                             | :---                            |
+| config_file                  | Configuration containing configuration of node   | "thermoplast.yml"               |
+| webcam_image_topic           | Topic to listen to for webcam image messages     | "/webcam/camera/color/image"    |
+| realsense_image_topic        | Topic to listen to for realsense image messages  | "/realsense/camera/color/image" |
+| depth_image_topic            | Topic to listen to for depth image messages      | "/realsense/camera/depth/image" |
+| webcam_info_topic            | Topic to listen to for webcam camera inf   o     | "/webcam/camera/color/image"    |
+| realsense_rbg_info_topic     | Topic to listen to for realsense rbg camera info | "/realsense/camera/color/image" |
+| depth_info_topic             | Topic to listen to for depth camera info         | "/realsense/camera/depth/image" |
+| pointcloud_topic             | Topic to listen to for point cloud messages      | "/realsense/camera/depth/image" |
+| joint_state_topic            | Topic to listen to for joint state messages      | "~/joint_states"                |
+| compute_cartesian_path_topic | Topic to publich cartesian path messages too     | "~/compute_cartesian_path"      |
 
 ## Relevant Links
 

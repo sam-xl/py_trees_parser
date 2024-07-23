@@ -7,7 +7,7 @@ package_name = "behavior_tree"
 
 setup(
     name=package_name,
-    version="0.0.3",
+    version="0.1.0",
     packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/ament_index/resource_index/packages", [os.path.join("resource", package_name)]),
@@ -33,9 +33,6 @@ setup(
     entry_points={
         "console_scripts": [
             "behavior_tree = behavior_tree.behavior_tree:main",
-            "inspection_tree = behavior_tree.inspection_tree:main",
-            "root_tree = behavior_tree.root_tree:main",
-            "thermoplast_tree = behavior_tree.thermoplast_tree:main",
         ],
     },
 )
