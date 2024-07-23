@@ -56,7 +56,7 @@ developed for Thermoplast project but could be reusable in other applications.
   create a `get_request` function, which creates the specific goal needed for the desired service,
   additionally it requires a `validate_service_response` function that will eventually set `self.success`
   depending if the response from the service was valid or not.
-- `ABBIOSignalTrigger` ([`py_trees.behaviour.Behaviour`]): This behavior triggers an IO signal by calling
+- `SetABBIOSignal` ([`py_trees.behaviour.Behaviour`]): This behavior triggers an IO signal by calling
   a specified ABB ROS 2 service (defualt is `/rws_client/set_io_signal`). It supports setting the IO signal
   to either high or low based on the trigger_on parameter. The behavior validates the response to
   determine if the service call was successful, and updates its status accordingly. This behavior is
