@@ -20,11 +20,44 @@ developed for Thermoplast project but could be reusable in other applications.
 - sensor_msgs
 - std_srvs
 
-## blackboards
+## Blackboards
+
 - `State`: This blackboard contains the keys related to the state of the robot, which includes
   the robot node and the state.
 - `Perception`: This blackboard contains the keys related to the perception stack of the robot,
   which includes images, point clouds, objects, etc.
+- `Movement`: This blackboard contains the keys related to the movement of the robot, which
+  would include things like waypoints.
+
+When creating the blackboards you would want to following the below pattern:
+
+```python
+import py_tress
+
+from behavior_tree import Robot
+from behavior_tree.data import Blackboards
+
+blackboard = Blackboards()
+blackboard.state = py_trees.blackboard.Client(name="State")
+blackboard.state.register_key(key="state", access=py_trees.common.Access.WRITE)
+blackboard.state.state = State()
+blackboard.state.register_key(key="robot", access=py_trees.common.Access.WRITE)
+blackboard.state.robot = Robot()
+blackboard.perception = py_trees.blackboard.Client(name="Perception")
+blackboard.perception.register_key(key="objects", access=py_trees.common.Access.WRITE)
+blackboard.perception.objects = None
+blackboard.movement = py_trees.blackboard.Client(name="Movement")
+blackboard.movement.register_key(key="waypoints", access=py_trees.common.Access.WRITE)
+blackboard.movement.waypoints = None
+```
+
+It is not necessary to register every client when creating the blackboard, rather you can
+register the ones you need/want. Additionally, for variables on the blackboard like "waypoints"
+or "objects" if you attempt to access them before they have been set you will receive a `KeyError`,
+so be aware of this when accessing variables.
+
+Additionally, be aware that the Robot node only needs to be created once and should be done when
+creating the tree.
 
 ## Behaviors
 
