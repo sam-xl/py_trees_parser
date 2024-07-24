@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>behavior_tree</name>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <description>Behavior tree implementation for SAM XL</description>
   <maintainer email="e.l.f.foster@tudelft.nl">Erich L Foster</maintainer>
   <license>Proprietary</license>
@@ -20,6 +20,7 @@
   <exec_depend>ros2_numpy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_srvs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
