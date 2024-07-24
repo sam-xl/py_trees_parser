@@ -20,6 +20,17 @@ developed for Thermoplast project but could be reusable in other applications.
 - sensor_msgs
 - std_srvs
 
+## Robot Node
+
+There is a single robot node which will live in the blackboard under the state client (see
+Blackboards for more information about this). The intention of the robot node is to be the
+location for image/sensor subscriptions, joint state subscriptions, and the tf buffer.
+Additionally, and trigger services that may need to be run can be accessed via the
+`Robot.command` function, where the command to be called is passed via a string. These
+commands are defined as a dictionary within the robot node. As for the tf tree one obtains
+transforms from the robot node via the `Robot.lookup_transform` function. This is just a
+convenience wrapper to the `tf2_ros.lookup_transform` function and is used in the same manner.
+
 ## Blackboards
 
 - `State`: This blackboard contains the keys related to the state of the robot, which includes
