@@ -2,29 +2,29 @@ import os
 
 import py_trees_ros
 import pytest
+import rclpy
 from ament_index_python.packages import get_package_share_directory
 from conftest import log_test_execution
-from rclpy import logging
 
 from behavior_tree.parser import BTParser
 
 SHARE_DIR = get_package_share_directory("behavior_tree")
 
+rclpy.logging.get_logger("BTParser").set_level(rclpy.logging.LoggingSeverity.DEBUG)
+
 
 @pytest.mark.parametrize(
-    "tree_file, logger_name",
+    "tree_file",
     [
-        ("test/data/test1.xml", "parse_test"),
-        ("test/data/test6.xml", "parse_test"),
-        ("test/data/test_subtree_main.xml", "subtree_test"),
+        "test/data/test1.xml",
+        "test/data/test6.xml",
+        "test/data/test_subtree_main.xml",
     ],
 )
 @log_test_execution
-def test_simple_tree(ros_init, tree_file, logger_name):
+def test_simple_tree(ros_init, tree_file):
     xml = os.path.join(SHARE_DIR, tree_file)
-    logger = logging.get_logger(logger_name)
-    logger.set_level(logging.LoggingSeverity.DEBUG)
-    parser = BTParser(xml, logging.get_logger("parse_test"))
+    parser = BTParser(xml)
     try:
         root = parser.parse()
         py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)

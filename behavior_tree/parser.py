@@ -1,6 +1,8 @@
 import importlib
 from xml.etree import ElementInclude, ElementTree
 
+import rclpy
+
 
 class BTParseError(Exception):
     pass
@@ -12,10 +14,10 @@ def is_float(value: str) -> bool:
 
 
 class BTParser:
-    def __init__(self, file: str, logger):
+    def __init__(self, file: str):
         self.file = file
 
-        self.logger = logger
+        self.logger = rclpy.logging.get_logger("BTParser")
 
     def _get_handle(self, value: str):
         self.logger.debug("Getting handle")
