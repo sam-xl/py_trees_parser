@@ -5,6 +5,7 @@ developed for Thermoplast project but could be reusable in other applications.
 
 ## Dependencies
 
+- abb_robot_msgs
 - damage_inspection_msgs
 - ElementTree
 - geometry_msgs
@@ -19,11 +20,55 @@ developed for Thermoplast project but could be reusable in other applications.
 - sensor_msgs
 - std_srvs
 
-## blackboards
+## Robot Node
+
+There is a single robot node which will live in the blackboard under the state client (see
+Blackboards for more information about this). The intention of the robot node is to be the
+location for image/sensor subscriptions, joint state subscriptions, and the tf buffer.
+Additionally, and trigger services that may need to be run can be accessed via the
+`Robot.command` function, where the command to be called is passed via a string. These
+commands are defined as a dictionary within the robot node. As for the tf tree one obtains
+transforms from the robot node via the `Robot.lookup_transform` function. This is just a
+convenience wrapper to the `tf2_ros.lookup_transform` function and is used in the same manner.
+
+## Blackboards
+
 - `State`: This blackboard contains the keys related to the state of the robot, which includes
   the robot node and the state.
 - `Perception`: This blackboard contains the keys related to the perception stack of the robot,
   which includes images, point clouds, objects, etc.
+- `Movement`: This blackboard contains the keys related to the movement of the robot, which
+  would include things like waypoints.
+
+When creating the blackboards you would want to following the below pattern:
+
+```python
+import py_tress
+
+from behavior_tree import Robot
+from behavior_tree.data import Blackboards
+
+blackboard = Blackboards()
+blackboard.state = py_trees.blackboard.Client(name="State")
+blackboard.state.register_key(key="state", access=py_trees.common.Access.WRITE)
+blackboard.state.state = State()
+blackboard.state.register_key(key="robot", access=py_trees.common.Access.WRITE)
+blackboard.state.robot = Robot()
+blackboard.perception = py_trees.blackboard.Client(name="Perception")
+blackboard.perception.register_key(key="objects", access=py_trees.common.Access.WRITE)
+blackboard.perception.objects = None
+blackboard.movement = py_trees.blackboard.Client(name="Movement")
+blackboard.movement.register_key(key="waypoints", access=py_trees.common.Access.WRITE)
+blackboard.movement.waypoints = None
+```
+
+It is not necessary to register every client when creating the blackboard, rather you can
+register the ones you need/want. Additionally, for variables on the blackboard like "waypoints"
+or "objects" if you attempt to access them before they have been set you will receive a `KeyError`,
+so be aware of this when accessing variables.
+
+Additionally, be aware that the Robot node only needs to be created once and should be done when
+creating the tree.
 
 ## Behaviors
 
@@ -47,6 +92,19 @@ developed for Thermoplast project but could be reusable in other applications.
   object detections from the `ObjectDetection` action server and then saves them to the
   `perception` blackboard.
 - `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
+
+## Services
+
+- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract service client class that sets
+  up most of the steps that are necessary for a ServiceClient. This requires that any derived class
+  create a `get_request` function, which creates the specific goal needed for the desired service,
+  additionally it requires a `validate_service_response` function that will eventually set `self.success`
+  depending if the response from the service was valid or not.
+- `SetABBIOSignal` ([`py_trees.behaviour.Behaviour`]): This behavior triggers an IO signal by calling
+  a specified ABB ROS 2 service (defualt is `/rws_client/set_io_signal`). It supports setting the IO signal
+  to either high or low based on the trigger_on parameter. The behavior validates the response to
+  determine if the service call was successful, and updates its status accordingly. This behavior is
+  useful for controlling external devices connected to the ABB like pneumatic cylinders via ROS 2 services.
 
 ## XML Parser
 
