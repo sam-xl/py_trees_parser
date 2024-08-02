@@ -67,6 +67,16 @@ so be aware of this when accessing variables.
 Additionally, be aware that the Robot node only needs to be created once and should be done when
 creating the tree.
 
+## Decorators
+
+- `RepeatFromBlackboard`: This is a decorator similar to the `py_trees.decorators.Repeat`, however
+  instead of having the number of successes specified when creating the `Repeat` decorator a
+  `num_key` is specified. The `num_key` parameter is a key in the blackboard where the decorator
+  will look for the number of times to repeat the child behaviors. The number of repitions will be
+  updated each time `initialize` is called. This decorator will return `RUNNING` until the children
+  have been run the number of times in the `num_key` and then will return `SUCCESS` or `FAILURE`
+  depending on the success of failure state of the children.
+
 ## Behaviors
 
 - `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
