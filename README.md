@@ -97,7 +97,11 @@ creating the tree.
   create a `get_request` function, which creates the specific goal needed for the desired action.
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
   object detections from the `ObjectDetection` action server and then saves them to the
-  `perception` blackboard.
+  `perception.objects` blackboard variable.
+- `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
+  object id detections from the `ToolIDDetector` action server and then updates the
+  `perception.objects` blackboard variable. It matches the detected id to the closest object using the
+  pixel location.
 - `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
 
 ## Services
