@@ -234,7 +234,7 @@ The following launch parameters apply to `thermoplast.launch.py`
 | depth_info_topic             | Topic to listen to for depth camera info         | "/realsense/camera/depth/image" |
 | pointcloud_topic             | Topic to listen to for point cloud messages      | "/realsense/camera/depth/image" |
 | joint_state_topic            | Topic to listen to for joint state messages      | "~/joint_states"                |
-| compute_cartesian_path_topic | Topic to publich cartesian path messages too     | "~/compute_cartesian_path"      |
+| compute_cartesian_path_topic | Topic to publish cartesian path messages too     | "~/compute_cartesian_path"      |
 
 ## Relevant Links
 
