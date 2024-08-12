@@ -97,7 +97,11 @@ creating the tree.
   create a `get_request` function, which creates the specific goal needed for the desired action.
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
   object detections from the `ObjectDetection` action server and then saves them to the
-  `perception` blackboard.
+  `perception.objects` blackboard variable.
+- `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
+  object id detections from the `ToolIDDetector` action server and then updates the
+  `perception.objects` blackboard variable. It matches the detected id to the closest object using the
+  pixel location.
 - `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
 
 ## Services
@@ -230,7 +234,7 @@ The following launch parameters apply to `thermoplast.launch.py`
 | depth_info_topic             | Topic to listen to for depth camera info         | "/realsense/camera/depth/image" |
 | pointcloud_topic             | Topic to listen to for point cloud messages      | "/realsense/camera/depth/image" |
 | joint_state_topic            | Topic to listen to for joint state messages      | "~/joint_states"                |
-| compute_cartesian_path_topic | Topic to publich cartesian path messages too     | "~/compute_cartesian_path"      |
+| compute_cartesian_path_topic | Topic to publish cartesian path messages too     | "~/compute_cartesian_path"      |
 
 ## Relevant Links
 
