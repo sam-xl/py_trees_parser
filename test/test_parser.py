@@ -1,56 +1,32 @@
 import os
-import unittest
 
 import py_trees_ros
+import pytest
 import rclpy
 from ament_index_python.packages import get_package_share_directory
-from rclpy import logging
+from conftest import log_test_execution
 
 from behavior_tree.parser import BTParser
 
 SHARE_DIR = get_package_share_directory("behavior_tree")
 
-
-class TestParser(unittest.TestCase):
-    def setUp(self):
-        rclpy.init()
-
-    def tearDown(self):
-        rclpy.try_shutdown()
-
-    def test_simple_tree(self):
-        xml = os.path.join(SHARE_DIR, "test/data/test1.xml")
-        logger = logging.get_logger("parse_test")
-        logger.set_level(logging.LoggingSeverity.DEBUG)
-        parser = BTParser(xml, logging.get_logger("parse_test"))
-        try:
-            root = parser.parse()
-            py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
-        except Exception as ex:
-            assert False, f"parse raised an exception {ex}"
-
-    def test_subtree(self):
-        xml = os.path.join(SHARE_DIR, "test/data/test_subtree_main.xml")
-        logger = logging.get_logger("subtree test")
-        logger.set_level(logging.LoggingSeverity.DEBUG)
-        parser = BTParser(xml, logging.get_logger("subtree test"))
-        try:
-            root = parser.parse()
-            py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
-        except Exception as ex:
-            assert False, f"parse raised an exception {ex}"
-
-    def test_complex_tree(self):
-        xml = os.path.join(SHARE_DIR, "test/data/test6.xml")
-        logger = logging.get_logger("parse_test")
-        logger.set_level(logging.LoggingSeverity.DEBUG)
-        parser = BTParser(xml, logging.get_logger("parse_test"))
-        try:
-            root = parser.parse()
-            py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
-        except Exception as ex:
-            assert False, f"parse raised an exception {ex}"
+rclpy.logging.get_logger("BTParser").set_level(rclpy.logging.LoggingSeverity.DEBUG)
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.mark.parametrize(
+    "tree_file",
+    [
+        "test/data/test1.xml",
+        "test/data/test6.xml",
+        "test/data/test_subtree_main.xml",
+    ],
+)
+@log_test_execution
+def test_simple_tree(ros_init, tree_file):
+    xml = os.path.join(SHARE_DIR, tree_file)
+    parser = BTParser(xml)
+    try:
+        root = parser.parse()
+        py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
+    except Exception as ex:
+        assert False, f"parse raised an exception {ex}"
