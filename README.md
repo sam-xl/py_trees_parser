@@ -89,12 +89,17 @@ creating the tree.
   to dive.
 - `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point cloud for "camera" to
   `perception` blackboard.
-
-## Actions
-
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action client class that
   sets up most of the steps that are necessary for an ActionClient. This requires that any derived class
   create a `get_request` function, which creates the specific goal needed for the desired action.
+- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract service client class that sets
+  up most of the steps that are necessary for a ServiceClient. This requires that any derived class
+  create a `get_request` function, which creates the specific goal needed for the desired service,
+  additionally it requires a `validate_service_response` function that will eventually set `self.success`
+  depending if the response from the service was valid or not.
+
+### Action behaviors
+
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
   object detections from the `ObjectDetection` action server and then saves them to the
   `perception.objects` blackboard variable.
@@ -106,14 +111,9 @@ creating the tree.
 - `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint configuration by providing a `link_name` and `target_pose_key`.
 - `MoveToNamedTarget` ([`behavior_tree.behaviors.ActionClient`]): Move the robot to a joint_configuration predefined by name.
 
-## Services
+### Service behaviors
 
-- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract service client class that sets
-  up most of the steps that are necessary for a ServiceClient. This requires that any derived class
-  create a `get_request` function, which creates the specific goal needed for the desired service,
-  additionally it requires a `validate_service_response` function that will eventually set `self.success`
-  depending if the response from the service was valid or not.
-- `SetABBIOSignal` ([`py_trees.behaviour.Behaviour`]): This behavior triggers an IO signal by calling
+- `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior triggers an IO signal by calling
   a specified ABB ROS 2 service (default is `/rws_client/set_io_signal`). It supports setting the IO signal
   to either high or low based on the trigger_on parameter. The behavior validates the response to
   determine if the service call was successful, and updates its status accordingly. This behavior is
@@ -243,6 +243,7 @@ The following launch parameters apply to `thermoplast.launch.py`
 <!-- links -->
 [py_trees_ros.subscribers.ToBlackboard]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.ToBlackboard
 [py_trees_ros.actions.ActionClient]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#module-py_trees_ros.action_clients
+[behavior_tree.behaviors.ServiceClient]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/behavior_tree/-/blob/humble/behavior_tree/behaviors/service_client.py
 [capture_image]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/SaveImage.action?ref_type=heads
 [damage_inspection]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/DetectDamage.action?ref_type=heads
 [py_trees.timers.Timer]: https://py-trees.readthedocs.io/en/release-2.2.x/modules.html#py_trees.timers.Timer
