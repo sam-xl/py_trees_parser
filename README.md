@@ -103,6 +103,8 @@ creating the tree.
   `perception.objects` blackboard variable. It matches the detected id to the closest object using the
   pixel location.
 - `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
+- `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint configuration by providing a `link_name` and `target_pose_key`.
+- `MoveToNamedTarget` ([`behavior_tree.behaviors.ActionClient`]): Move the robot to a joint_configuration predefined by name.
 
 ## Services
 
