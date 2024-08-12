@@ -119,6 +119,18 @@ creating the tree.
   determine if the service call was successful, and updates its status accordingly. This behavior is
   useful for controlling external devices connected to the ABB like pneumatic cylinders via ROS 2 services.
 
+### Pick & Place pipeline
+The components that could make up the process of `pick&place` are created as `ActionClient` behaviors and can be found in `/behavior_tree/behaviors/move.py`.
+We distinguish three different types of motion requests:
+- `MoveCartesian`: By providing among others a `list of waypoints`, motions like __approaching__ a pick/place pose or __retreating__ from one 
+could be achieved with cartesian planning ensuring a linear movement.
+- `MoveJoint`: To reach a specific joint pose in order to __rotate end-effector__ for example, the user can send a `MoveJoint` request by specifying a `target_pose_key` where the _goal pose_ would be stored.
+- `MoveToNamedTarget`: By providing a priorly configured `named_target` i.e. a `named_joint_configuration`, the robot can move to "general areas of interest" notably __general pick/place location__, __inspection_station__ or __open/close fingers__ for a finger gripper...
+_____
+It is necessary to create a specific __gripper_behavior__ depending on its type (fingers, suction, magnetic...) and how it is connected to the robot system. One example to be used in Thermoplast is `SetABBIOSignal` which can activate/deactivate the signal of the magnetic gripper.
+____
+The _pick & place pipeline_ can then be composed of the different motion behaviors the behavior_tree provides and easily costumized to the specific use-case in place. See subtrees examples: `pick.xml` and `place.xml`, the `pick_and_place.xml` tree is created by providing the formers as substrees.
+
 ## XML Parser
 
 The Behavior Tree Parser (`BTParse`) is a Python module that allows you to
