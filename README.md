@@ -98,7 +98,7 @@ creating the tree.
   additionally it requires a `validate_service_response` function that will eventually set `self.success`
   depending if the response from the service was valid or not.
 
-### Action behaviors
+### Action Behaviors
 
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
   object detections from the `ObjectDetection` action server and then saves them to the
@@ -111,7 +111,7 @@ creating the tree.
 - `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint configuration by providing a `link_name` and `target_pose_key`.
 - `MoveToNamedTarget` ([`behavior_tree.behaviors.ActionClient`]): Move the robot to a joint_configuration predefined by name.
 
-### Service behaviors
+### Service Behaviors
 
 - `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior triggers an IO signal by calling
   a specified ABB ROS 2 service (default is `/rws_client/set_io_signal`). It supports setting the IO signal
