@@ -89,12 +89,17 @@ creating the tree.
   to dive.
 - `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point cloud for "camera" to
   `perception` blackboard.
-
-## Actions
-
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action client class that
   sets up most of the steps that are necessary for an ActionClient. This requires that any derived class
   create a `get_request` function, which creates the specific goal needed for the desired action.
+- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract service client class that sets
+  up most of the steps that are necessary for a ServiceClient. This requires that any derived class
+  create a `get_request` function, which creates the specific goal needed for the desired service,
+  additionally it requires a `validate_service_response` function that will eventually set `self.success`
+  depending if the response from the service was valid or not.
+
+### Action Behaviors
+
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
   object detections from the `ObjectDetection` action server and then saves them to the
   `perception.objects` blackboard variable.
@@ -103,19 +108,28 @@ creating the tree.
   `perception.objects` blackboard variable. It matches the detected id to the closest object using the
   pixel location.
 - `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
+- `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint configuration by providing a `link_name` and `target_pose_key`.
+- `MoveToNamedTarget` ([`behavior_tree.behaviors.ActionClient`]): Move the robot to a joint_configuration predefined by name.
 
-## Services
+### Service Behaviors
 
-- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract service client class that sets
-  up most of the steps that are necessary for a ServiceClient. This requires that any derived class
-  create a `get_request` function, which creates the specific goal needed for the desired service,
-  additionally it requires a `validate_service_response` function that will eventually set `self.success`
-  depending if the response from the service was valid or not.
-- `SetABBIOSignal` ([`py_trees.behaviour.Behaviour`]): This behavior triggers an IO signal by calling
+- `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior triggers an IO signal by calling
   a specified ABB ROS 2 service (default is `/rws_client/set_io_signal`). It supports setting the IO signal
   to either high or low based on the trigger_on parameter. The behavior validates the response to
   determine if the service call was successful, and updates its status accordingly. This behavior is
   useful for controlling external devices connected to the ABB like pneumatic cylinders via ROS 2 services.
+
+### Pick & Place pipeline
+The components that could make up the process of `pick&place` are created as `ActionClient` behaviors and can be found in `/behavior_tree/behaviors/move.py`.
+We distinguish three different types of motion requests:
+- `MoveCartesian`: By providing among others a `list of waypoints`, motions like __approaching__ a pick/place pose or __retreating__ from one 
+could be achieved with cartesian planning ensuring a linear movement.
+- `MoveJoint`: To reach a specific joint pose in order to __rotate end-effector__ for example, the user can send a `MoveJoint` request by specifying a `target_pose_key` where the _goal pose_ would be stored.
+- `MoveToNamedTarget`: By providing a priorly configured `named_target` i.e. a `named_joint_configuration`, the robot can move to "general areas of interest" notably __general pick/place location__, __inspection_station__ or __open/close fingers__ for a finger gripper...
+_____
+It is necessary to create a specific __gripper_behavior__ depending on its type (fingers, suction, magnetic...) and how it is connected to the robot system. One example to be used in Thermoplast is `SetABBIOSignal` which can activate/deactivate the signal of the magnetic gripper.
+____
+The _pick & place pipeline_ can then be composed of the different motion behaviors the behavior_tree provides and easily costumized to the specific use-case in place. See subtrees examples: `pick.xml` and `place.xml`, the `pick_and_place.xml` tree is created by providing the formers as substrees.
 
 ## XML Parser
 
@@ -241,6 +255,7 @@ The following launch parameters apply to `thermoplast.launch.py`
 <!-- links -->
 [py_trees_ros.subscribers.ToBlackboard]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.ToBlackboard
 [py_trees_ros.actions.ActionClient]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#module-py_trees_ros.action_clients
+[behavior_tree.behaviors.ServiceClient]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/behavior_tree/-/blob/humble/behavior_tree/behaviors/service_client.py
 [capture_image]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/SaveImage.action?ref_type=heads
 [damage_inspection]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/DetectDamage.action?ref_type=heads
 [py_trees.timers.Timer]: https://py-trees.readthedocs.io/en/release-2.2.x/modules.html#py_trees.timers.Timer
