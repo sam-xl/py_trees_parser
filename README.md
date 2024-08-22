@@ -122,7 +122,7 @@ creating the tree.
 ### Pick & Place pipeline
 The components that could make up the process of `pick&place` are created as `ActionClient` behaviors and can be found in `/behavior_tree/behaviors/move.py`.
 We distinguish three different types of motion requests:
-- `MoveCartesian`: By providing among others a `list of waypoints`, motions like __approaching__ a pick/place pose or __retreating__ from one 
+- `MoveCartesian`: By providing among others a `list of waypoints`, motions like __approaching__ a pick/place pose or __retreating__ from one
 could be achieved with cartesian planning ensuring a linear movement.
 - `MoveJoint`: To reach a specific joint pose in order to __rotate end-effector__ for example, the user can send a `MoveJoint` request by specifying a `target_pose_key` where the _goal pose_ would be stored.
 - `MoveToNamedTarget`: By providing a priorly configured `named_target` i.e. a `named_joint_configuration`, the robot can move to "general areas of interest" notably __general pick/place location__, __inspection_station__ or __open/close fingers__ for a finger gripper...
@@ -237,18 +237,18 @@ ros2 launch behavior_tree thermoplast.launch.py
 
 The following launch parameters apply to `thermoplast.launch.py`
 
-| Parameter Name               | Description                                      | Default Value                   |
-| :---                         | :---                                             | :---                            |
-| config_file                  | Configuration containing configuration of node   | "thermoplast.yml"               |
-| webcam_image_topic           | Topic to listen to for webcam image messages     | "/webcam/camera/color/image"    |
-| realsense_image_topic        | Topic to listen to for realsense image messages  | "/realsense/camera/color/image" |
-| depth_image_topic            | Topic to listen to for depth image messages      | "/realsense/camera/depth/image" |
-| webcam_info_topic            | Topic to listen to for webcam camera inf   o     | "/webcam/camera/color/image"    |
-| realsense_rbg_info_topic     | Topic to listen to for realsense rbg camera info | "/realsense/camera/color/image" |
-| depth_info_topic             | Topic to listen to for depth camera info         | "/realsense/camera/depth/image" |
-| pointcloud_topic             | Topic to listen to for point cloud messages      | "/realsense/camera/depth/image" |
-| joint_state_topic            | Topic to listen to for joint state messages      | "~/joint_states"                |
-| compute_cartesian_path_topic | Topic to publish cartesian path messages too     | "~/compute_cartesian_path"      |
+| Parameter Name               | Description                                      | Default Value                         |
+| :---                         | :---                                             | :---                                  |
+| config_file                  | Configuration containing configuration of node   | "thermoplast.yml"                     |
+| webcam_image_topic           | Topic to listen to for webcam image messages     | "/camera/webcam/color/image"          |
+| webcam_info_topic            | Topic to listen to for webcam camera info        | "/camera/webcam/color/camera_info"    |
+| realsense_image_topic        | Topic to listen to for realsense image messages  | "/camera/realsense/color/image"       |
+| realsense_rgb_info_topic     | Topic to listen to for realsense rgb camera info | "/camera/realsense/color/camera_info" |
+| depth_image_topic            | Topic to listen to for depth image messages      | "/camera/realsense/depth/image"       |
+| depth_info_topic             | Topic to listen to for depth camera info         | "/camera/realsense/depth/camera_info" |
+| pointcloud_topic             | Topic to listen to for point cloud messages      | "/camera/realsense/depth/image"       |
+| joint_state_topic            | Topic to listen to for joint state messages      | "~/joint_states"                      |
+| compute_cartesian_path_topic | Topic to publish cartesian path messages too     | "~/compute_cartesian_path"            |
 
 ## Relevant Links
 
