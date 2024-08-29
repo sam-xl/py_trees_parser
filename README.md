@@ -22,23 +22,25 @@ developed for Thermoplast project but could be reusable in other applications.
 
 ## Robot Node
 
-There is a single robot node which will live in the blackboard under the state client (see
-Blackboards for more information about this). The intention of the robot node is to be the
-location for image/sensor subscriptions, joint state subscriptions, and the tf buffer.
-Additionally, any trigger services that may need to be run can be accessed via the
-`Robot.command` function, where the command to be called is passed via a string. These
-commands are defined as a dictionary within the robot node. As for the tf tree one obtains
-transforms from the robot node via the `Robot.lookup_transform` function. This is just a
-convenience wrapper to the `tf2_ros.lookup_transform` function and is used in the same manner.
+There is a single robot node which will live in the blackboard under the state
+client (see Blackboards for more information about this). The intention of the
+robot node is to be the location for image/sensor subscriptions, joint state
+subscriptions, and the tf buffer. Additionally, any trigger services that may
+need to be run can be accessed via the `Robot.command` function, where the
+command to be called is passed via a string. These commands are defined as a
+dictionary within the robot node. As for the tf tree one obtains transforms
+from the robot node via the `Robot.lookup_transform` function. This is just a
+convenience wrapper to the `tf2_ros.lookup_transform` function and is used in
+the same manner.
 
 ## Blackboards
 
-- `State`: This blackboard contains the keys related to the state of the robot, which includes
-  the robot node and the state.
-- `Perception`: This blackboard contains the keys related to the perception stack of the robot,
-  which includes images, point clouds, objects, etc.
-- `Movement`: This blackboard contains the keys related to the movement of the robot, which
-  would include things like waypoints.
+- `State`: This blackboard contains the keys related to the state of the robot,
+  which includes the robot node and the state.
+- `Perception`: This blackboard contains the keys related to the perception
+  stack of the robot, which includes images, point clouds, objects, etc.
+- `Movement`: This blackboard contains the keys related to the movement of the
+  robot, which would include things like waypoints.
 
 When creating the blackboards you would want to follow the pattern below:
 
@@ -59,77 +61,102 @@ blackboard.movement.register_key(key="waypoints", access=py_trees.common.Access.
 blackboard.movement.waypoints = None
 ```
 
-It is not necessary to register every client when creating the blackboard, rather you can
-register the ones you need/want. Additionally, for variables on the blackboard like "waypoints"
-or "objects" if you attempt to access them before they have been set you will receive a `KeyError`,
-so be aware of this when accessing variables.
+It is not necessary to register every client when creating the blackboard,
+rather you can register the ones you need/want. Additionally, for variables on
+the blackboard like "waypoints" or "objects" if you attempt to access them
+before they have been set you will receive a `KeyError`, so be aware of this
+when accessing variables.
 
-Additionally, be aware that the Robot node only needs to be created once and should be done when
-creating the tree.
+Additionally, be aware that the Robot node only needs to be created once and
+should be done when creating the tree.
 
 ## Decorators
 
-- `RepeatFromBlackboard`: This is a decorator similar to the `py_trees.decorators.Repeat`, however
-  instead of having the number of successes specified when creating the `Repeat` decorator a
-  `num_key` is specified. The `num_key` parameter is a key in the blackboard where the decorator
-  will look for the number of times to repeat the child behaviors. The number of repitions will be
-  updated each time `initialize` is called. This decorator will return `RUNNING` until the children
-  have been run the number of times in the `num_key` and then will return `SUCCESS` or `FAILURE`
+- `RepeatFromBlackboard`: This is a decorator similar to the
+  `py_trees.decorators.Repeat`, however instead of having the number of
+  successes specified when creating the `Repeat` decorator a `num_key` is
+  specified. The `num_key` parameter is a key in the blackboard where the
+  decorator will look for the number of times to repeat the child behaviors.
+  The number of repitions will be updated each time `initialize` is called.
+  This decorator will return `RUNNING` until the children have been run the
+  number of times in the `num_key` and then will return `SUCCESS` or `FAILURE`
   depending on the success of failure state of the children.
 
 ## Behaviors
 
-- `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
-  `perception` blackboard.
-- `SaveImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
-  drive.
-- `SaveDepthImage` ([`py_python.behavior.Behaviour`]): Save the current image for "camera" to
-  `perception` blackboard.
-- `SaveDepthImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image for "camera"
-  to dive.
-- `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point cloud for "camera" to
-  `perception` blackboard.
-- `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action client class that
-  sets up most of the steps that are necessary for an ActionClient. This requires that any derived class
-  create a `get_request` function, which creates the specific goal needed for the desired action.
-- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract service client class that sets
-  up most of the steps that are necessary for a ServiceClient. This requires that any derived class
-  create a `get_request` function, which creates the specific goal needed for the desired service,
-  additionally it requires a `validate_service_response` function that will eventually set `self.success`
-  depending if the response from the service was valid or not.
+- `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for
+  "camera" to `perception` blackboard.
+- `SaveImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image
+  for "camera" to drive.
+- `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point
+  cloud for "camera" to `perception` blackboard.
+- `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action
+  client class that sets up most of the steps that are necessary for an
+  ActionClient. This requires that any derived class create a `get_request`
+  function, which creates the specific goal needed for the desired action.
+- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract
+  service client class that sets up most of the steps that are necessary for a
+  ServiceClient. This requires that any derived class create a `get_request`
+  function, which creates the specific goal needed for the desired service,
+  additionally it requires a `validate_service_response` function that will
+  eventually set `self.success` depending if the response from the service was
+  valid or not.
 
 ### Action Behaviors
 
-- `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
-  object detections from the `ObjectDetection` action server and then saves them to the
-  `perception.objects` blackboard variable.
-- `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that requests
-  object id detections from the `ToolIDDetector` action server and then updates the
-  `perception.objects` blackboard variable. It matches the detected id to the closest object using the
-  pixel location.
-- `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot along the given waypoints.
-- `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint configuration by providing a `link_name` and `target_pose_key`.
-- `MoveToNamedTarget` ([`behavior_tree.behaviors.ActionClient`]): Move the robot to a joint_configuration predefined by name.
+- `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client
+  that requests object detections from the `ObjectDetection` action server and
+  then saves them to the `perception.objects` blackboard variable.
+- `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that
+  requests object id detections from the `ToolIDDetector` action server and
+  then updates the `perception.objects` blackboard variable. It matches the
+  detected id to the closest object using the pixel location.
+- `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot
+  along the given waypoints.
+- `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint
+  configuration by providing a `link_name` and `target_pose_key`.
+- `MoveToNamedTarget` ([`behavior_tree.behaviors.ActionClient`]): Move the
+  robot to a joint_configuration predefined by name.
 
 ### Service Behaviors
 
-- `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior triggers an IO signal by calling
-  a specified ABB ROS 2 service (default is `/rws_client/set_io_signal`). It supports setting the IO signal
-  to either high or low based on the trigger_on parameter. The behavior validates the response to
-  determine if the service call was successful, and updates its status accordingly. This behavior is
-  useful for controlling external devices connected to the ABB like pneumatic cylinders via ROS 2 services.
+- `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior
+  triggers an IO signal by calling a specified ABB ROS 2 service (default is
+  `/rws_client/set_io_signal`). It supports setting the IO signal to either
+  high or low based on the trigger_on parameter. The behavior validates the
+  response to determine if the service call was successful, and updates its
+  status accordingly. This behavior is useful for controlling external devices
+  connected to the ABB like pneumatic cylinders via ROS 2 services.
 
 ### Pick & Place pipeline
-The components that could make up the process of `pick&place` are created as `ActionClient` behaviors and can be found in `/behavior_tree/behaviors/move.py`.
+
+The components that could make up the process of `pick&place` are created as
+`ActionClient` behaviors and can be found in
+`/behavior_tree/behaviors/move.py`.
+
 We distinguish three different types of motion requests:
-- `MoveCartesian`: By providing among others a `list of waypoints`, motions like __approaching__ a pick/place pose or __retreating__ from one 
-could be achieved with cartesian planning ensuring a linear movement.
-- `MoveJoint`: To reach a specific joint pose in order to __rotate end-effector__ for example, the user can send a `MoveJoint` request by specifying a `target_pose_key` where the _goal pose_ would be stored.
-- `MoveToNamedTarget`: By providing a priorly configured `named_target` i.e. a `named_joint_configuration`, the robot can move to "general areas of interest" notably __general pick/place location__, __inspection_station__ or __open/close fingers__ for a finger gripper...
+
+- `MoveCartesian`: By providing among others a `list of waypoints`, motions
+  like __approaching__ a pick/place pose or __retreating__ from one could be
+  achieved with cartesian planning ensuring a linear movement.
+- `MoveJoint`: To reach a specific joint pose in order to __rotate
+  end-effector__ for example, the user can send a `MoveJoint` request by
+  specifying a `target_pose_key` where the _goal pose_ would be stored.
+- `MoveToNamedTarget`: By providing a priorly configured `named_target` i.e. a
+  `named_joint_configuration`, the robot can move to "general areas of
+  interest" notably __general pick/place location__, __inspection_station__ or
+  __open/close fingers__ for a finger gripper...
+
 _____
-It is necessary to create a specific __gripper_behavior__ depending on its type (fingers, suction, magnetic...) and how it is connected to the robot system. One example to be used in Thermoplast is `SetABBIOSignal` which can activate/deactivate the signal of the magnetic gripper.
+It is necessary to create a specific __gripper_behavior__ depending on its type
+(fingers, suction, magnetic...) and how it is connected to the robot system.
+One example to be used in Thermoplast is `SetABBIOSignal` which can
+activate/deactivate the signal of the magnetic gripper.
 ____
-The _pick & place pipeline_ can then be composed of the different motion behaviors the behavior_tree provides and easily costumized to the specific use-case in place. See subtrees examples: `pick.xml` and `place.xml`, the `pick_and_place.xml` tree is created by providing the formers as substrees.
+The _pick & place pipeline_ can then be composed of the different motion
+behaviors the behavior_tree provides and easily costumized to the specific
+use-case in place. See subtrees examples: `pick.xml` and `place.xml`, the
+`pick_and_place.xml` tree is created by providing the formers as substrees.
 
 ## XML Parser
 
@@ -157,7 +184,8 @@ define the nodes and their attributes. It should be similar to the following
 </py_trees.composites.Parallel>
 ```
 
-Assuming the above is saved in `behavior_tree.xml` it can be imported via the following code:
+Assuming the above is saved in `behavior_tree.xml` it can be imported via the
+following code:
 
 ```python
 from behavior_tree import parser
@@ -175,7 +203,8 @@ behavior_tree = parser.parse()
 
 ### Sub-Trees
 
-It is possible to include sub-trees in the xml file containing a behavior tree. This is made possible via the following:
+It is possible to include sub-trees in the xml file containing a behavior tree.
+This is made possible via the following:
 
 ```xml
 <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -185,15 +214,16 @@ It is possible to include sub-trees in the xml file containing a behavior tree. 
 
 The included subtree should be a complete tree, but can only contain one root.
 It is possible to include multiple sub-trees and a sub-tree can also include
-another subtree. However, be aware that the all directories are reltative to the main.
-For example, if we have four behavior tree files in a directory like so:
+another subtree. However, be aware that the all directories are reltative to
+the main. For example, if we have four behavior tree files in a directory like
+so:
 
 ```
-config                                                                                                                                                                                                                                │
-├── main.xml                                                                                                                                                                                                              │
+config
+├── main.xml
 └── subtree
-    ├── subtree1.xml                                                                                                                                                                                                             │
-    ├── subtree2.xml                                                                                                                                                                                                                │
+    ├── subtree1.xml
+    ├── subtree2.xml
     └── subtree3.xml
 ```
 
@@ -237,18 +267,18 @@ ros2 launch behavior_tree thermoplast.launch.py
 
 The following launch parameters apply to `thermoplast.launch.py`
 
-| Parameter Name               | Description                                      | Default Value                   |
-| :---                         | :---                                             | :---                            |
-| config_file                  | Configuration containing configuration of node   | "thermoplast.yml"               |
-| webcam_image_topic           | Topic to listen to for webcam image messages     | "/webcam/camera/color/image"    |
-| realsense_image_topic        | Topic to listen to for realsense image messages  | "/realsense/camera/color/image" |
-| depth_image_topic            | Topic to listen to for depth image messages      | "/realsense/camera/depth/image" |
-| webcam_info_topic            | Topic to listen to for webcam camera inf   o     | "/webcam/camera/color/image"    |
-| realsense_rbg_info_topic     | Topic to listen to for realsense rbg camera info | "/realsense/camera/color/image" |
-| depth_info_topic             | Topic to listen to for depth camera info         | "/realsense/camera/depth/image" |
-| pointcloud_topic             | Topic to listen to for point cloud messages      | "/realsense/camera/depth/image" |
-| joint_state_topic            | Topic to listen to for joint state messages      | "~/joint_states"                |
-| compute_cartesian_path_topic | Topic to publish cartesian path messages too     | "~/compute_cartesian_path"      |
+| Parameter Name               | Description                                      | Default Value                         |
+| :---                         | :---                                             | :---                                  |
+| config_file                  | Configuration containing configuration of node   | "thermoplast.yml"                     |
+| webcam_image_topic           | Topic to listen to for webcam image messages     | "/camera/webcam/color/image"          |
+| webcam_info_topic            | Topic to listen to for webcam camera info        | "/camera/webcam/color/camera_info"    |
+| realsense_image_topic        | Topic to listen to for realsense image messages  | "/camera/realsense/color/image"       |
+| realsense_rgb_info_topic     | Topic to listen to for realsense rgb camera info | "/camera/realsense/color/camera_info" |
+| depth_image_topic            | Topic to listen to for depth image messages      | "/camera/realsense/depth/image"       |
+| depth_info_topic             | Topic to listen to for depth camera info         | "/camera/realsense/depth/camera_info" |
+| pointcloud_topic             | Topic to listen to for point cloud messages      | "/camera/realsense/depth/image"       |
+| joint_state_topic            | Topic to listen to for joint state messages      | "~/joint_states"                      |
+| compute_cartesian_path_topic | Topic to publish cartesian path messages too     | "~/compute_cartesian_path"            |
 
 ## Relevant Links
 
