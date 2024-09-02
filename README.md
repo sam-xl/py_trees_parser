@@ -51,14 +51,10 @@ from behavior_tree import Robot
 from behavior_tree.data import Blackboards
 
 blackboard = Blackboards()
-blackboard.state.register_key(key="state", access=py_trees.common.Access.WRITE)
-blackboard.state.state = State()
-blackboard.state.register_key(key="robot", access=py_trees.common.Access.WRITE)
-blackboard.state.robot = Robot()
-blackboard.perception.register_key(key="objects", access=py_trees.common.Access.WRITE)
-blackboard.perception.objects = None
-blackboard.movement.register_key(key="waypoints", access=py_trees.common.Access.WRITE)
-blackboard.movement.waypoints = None
+blackboard.set("state", key="state", value=State())
+blackboard.set("state", key="robot", value=Robot())
+blackboard.set("perception", key="objects", value=None)
+blackboard.set("movement", key="waypoints", value=None)
 ```
 
 It is not necessary to register every client when creating the blackboard,
