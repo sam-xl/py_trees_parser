@@ -87,6 +87,10 @@ class BTParser:
         -------
             A tuple containing the module name and the handle.
 
+        Raises
+        ------
+            KeyError: If the node_type is not an expected type.
+
         """
         self.logger.debug(f"Getting handle: {value}")
         if value == "":
@@ -109,7 +113,7 @@ class BTParser:
 
     def _string_num_or_code(self, value: str) -> int | float | str:
         """
-        Convert a string to either an integer, float, or leaves it as a string.
+        Convert a string to either an integer, float, code, or leaves it as a string.
 
         Args:
         ----
@@ -212,6 +216,7 @@ class BTParser:
         Raises
         ------
             KeyError: If the node_type is not an expected type.
+            BTParseError: If the parsed obj cannot be parsed correctly.
 
         """
         # the expectation is that the xml_node will have a tag that is the
