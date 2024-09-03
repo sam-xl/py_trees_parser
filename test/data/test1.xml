@@ -1,11 +1,15 @@
 <!-- The following example comes from
     https://py-trees-ros-tutorials.readthedocs.io/en/release-2.1.x/tutorials.html#tree -->
-<py_trees.composites.Parallel name="TutorialOne" policy="py_trees.common.ParallelPolicy.SuccessOnAll(synchronise=False)">
-    <py_trees.composites.Sequence name="Topics2BB" memory="False">
-        <py_trees_ros.battery.ToBlackboard name="Battery2BB" topic_name="/battery/state" qos_profile="py_trees_ros.utilities.qos_profile_unlatched()" threshold="30.0" />
-    </py_trees.composites.Sequence>
-    <py_trees.composites.Selector name="Tasks" memory="False">
-        <py_trees.behaviours.Running name="Idle" />
-        <py_trees.behaviours.Periodic name="Flip Eggs" n="2" />
-    </py_trees.composites.Selector>
+<py_trees.composites.Parallel name="TutorialOne"
+  policy="$(py_trees.common.ParallelPolicy.SuccessOnAll(synchronise=False))">
+  <py_trees.composites.Sequence name="Topics2BB" memory="False">
+    <py_trees_ros.battery.ToBlackboard name="Battery2BB"
+      topic_name="/battery/state"
+      qos_profile="$(py_trees_ros.utilities.qos_profile_unlatched())"
+      threshold="30.0" />
+  </py_trees.composites.Sequence>
+  <py_trees.composites.Selector name="Tasks" memory="False">
+    <py_trees.behaviours.Running name="Idle" />
+    <py_trees.behaviours.Periodic name="Flip Eggs" n="2" />
+  </py_trees.composites.Selector>
 </py_trees.composites.Parallel>

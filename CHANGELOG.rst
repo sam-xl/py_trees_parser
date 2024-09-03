@@ -1,6 +1,10 @@
 Changelog for package behavior_tree
 
 .. This is only a rough description of the main changes of the repository
+0.2.0 (2024-09-03)
+------------------
+* Added support for idioms
+* Added support for code in behavior parameters
 
 0.2.0 (2024-08-16)
 ------------------
@@ -9,7 +13,7 @@ Changelog for package behavior_tree
 
 0.1.7 (2024-08-14)
 ------------------
-* Add Joint motion behaviors: `MoveToNamedTarget` and `MoveJoint` 
+* Add Joint motion behaviors: `MoveToNamedTarget` and `MoveJoint`
 * Create `Pick and Place` pipeline
 
 0.1.4 (2024-08-02)

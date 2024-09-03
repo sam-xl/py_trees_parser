@@ -1,0 +1,21 @@
+<py_trees.composites.Sequence name="Idioms" memory="False">
+  <py_trees.idioms.oneshot name="OneShot"
+    variable_name="one_shot"
+    policy="$(py_trees.common.OneShotPolicy)">
+    <py_trees.behaviours.Success name="OneShotSuccess" />
+  </py_trees.idioms.oneshot>
+  <py_trees.idioms.either_or
+    name="EitherOr"
+    conditions="$([
+      py_trees.common.ComparisonExpression('joystick_one' , 'enabled' , operator.eq),
+      py_trees.common.ComparisonExpression('joystick_two' , 'enabled' , operator.eq),
+    ])"
+    namespace="either_or">
+    <py_trees.behaviours.Success name="EitherOr1" />
+    <py_trees.behaviours.Success name="EitherOr2" />
+  </py_trees.idioms.either_or>
+  <py_trees.idioms.pick_up_where_you_left_off name="PickUpWhereYouLeftOff">
+    <py_trees.behaviours.Success name="PickUpWhereYouLeftOff1" />
+    <py_trees.behaviours.Success name="PickUpWhereYouLeftOff2" />
+  </py_trees.idioms.pick_up_where_you_left_off>
+</py_trees.composites.Sequence>
