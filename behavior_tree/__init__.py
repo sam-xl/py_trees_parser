@@ -1,4 +1,5 @@
-from .data import Blackboards, State
+from .blackboards import Blackboards
+from .data import State
 from .parser import BTParser
 from .robot import Robot
 
