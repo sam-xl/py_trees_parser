@@ -1,7 +1,7 @@
 Changelog for package behavior_tree
 
 .. This is only a rough description of the main changes of the repository
-0.2.0 (2024-09-03)
+0.3.0 (2024-09-03)
 ------------------
 * Added support for idioms
 * Added support for code in behavior parameters

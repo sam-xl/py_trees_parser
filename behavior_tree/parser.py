@@ -36,7 +36,7 @@ def is_float(value: str) -> bool:
 
 def is_code(value: str) -> bool:
     """
-    Check if a is intended to be code.
+    Check if a string is intended to be code.
 
     This will check if a string is surrounded by $(), which indicates it is intended to be code.
 
@@ -230,7 +230,7 @@ class BTParser:
             or issubclass(obj, py_trees.decorators.Decorator)
         ):
             raise KeyError(
-                f"{node_type = } was not an expected type (Behavior, Composite, Decorator)"
+                f"{node_type = } was not an expected type (Behavior, Composite, Decorator, Idiom)"
             )
 
         self.logger.debug(f"Found {module_name = } and {obj = }")
