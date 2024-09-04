@@ -161,17 +161,31 @@ parse an XML file representing a behavior tree and construct the corresponding
 behavior tree using the PyTrees library. It supports composite nodes, behavior
 nodes from PyTrees, and custom behavior nodes defined in your local library.
 
+For any parameter that are code the code must be surrounded by `$()`. This
+allows the parser know that the following parameter value is in fact code
+and should be evaluated as code.
+
+Idioms are also now supported. An idiom is a special function that produces
+a behavior tree, the function is expected to either take no children, takes
+a list of children via parameters "taks" or "subtrees", or takes a single
+child via parameter "behavior". The xml parser will treat children in the
+same way that it treats children for all other behaviors. That is the
+children should be a subnode of the idiom node.
+
 ### Basic Usage
 
 To use the Behavior Tree Parser, follow these steps:
 
 Create an XML file that represents your behavior tree. The XML structure should
-define the nodes and their attributes. It should be similar to the following
+define the nodes and their attributes. It should be similar to the following:
 
 ```xml
 <py_trees.composites.Parallel name="TutorialOne" synchronise="False">
     <py_trees.composites.Sequence name="Topics2BB" memory="False">
-        <py_trees_ros.battery.ToBlackboard name="Battery2BB" topic_name="/battery/state" qos_profile="py_trees_ros.utilities.qos_profile_unlatched()" threshold="30.0" />
+        <py_trees_ros.battery.ToBlackboard name="Battery2BB"
+            topic_name="/battery/state"
+            qos_profile="$(py_trees_ros.utilities.qos_profile_unlatched())"
+            threshold="30.0" />
     </py_trees.composites.Sequence>
     <py_trees.composites.Selector name="Tasks" memory="False">
         <py_trees.behaviours.Running name="Idle" />

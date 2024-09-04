@@ -19,6 +19,7 @@ rclpy.logging.get_logger("BTParser").set_level(rclpy.logging.LoggingSeverity.DEB
         "test/data/test1.xml",
         "test/data/test6.xml",
         "test/data/test_subtree_main.xml",
+        "test/data/test_idioms.xml",
     ],
 )
 @log_test_execution

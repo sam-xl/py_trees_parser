@@ -1,4 +1,7 @@
+import ast
 import importlib
+import inspect
+import types
 from xml.etree import ElementInclude, ElementTree
 
 import py_trees
@@ -24,8 +27,29 @@ def is_float(value: str) -> bool:
         True if the string can be converted to a float, False otherwise.
 
     """
-    # TODO: handle scientific notation
-    return value.lstrip("-").replace(".", "", 1).isdigit()
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
+def is_code(value: str) -> bool:
+    """
+    Check if a string is intended to be code.
+
+    This will check if a string is surrounded by $(), which indicates it is intended to be code.
+
+    Args:
+    ----
+        value: The string to check.
+
+    Returns
+    -------
+        True if the string represents code, False otherwise.
+
+    """
+    return value.startswith("$(") and value.endswith(")")
 
 
 class BTParser:
@@ -63,6 +87,10 @@ class BTParser:
         -------
             A tuple containing the module name and the handle.
 
+        Raises
+        ------
+            KeyError: If the node_type is not an expected type.
+
         """
         self.logger.debug(f"Getting handle: {value}")
         if value == "":
@@ -70,7 +98,7 @@ class BTParser:
 
         try:
             module_name, obj_name = value.rsplit(".", 1)
-        except Exception as ex:
+        except ValueError as ex:
             raise KeyError(f"Error parsing handle: {ex}")
 
         try:
@@ -83,9 +111,9 @@ class BTParser:
         self.logger.debug(f"{module_name = }, {obj_name = }, {handle = }")
         return module_name, handle
 
-    def _string_or_num(self, value: str) -> int | float | str:
+    def _string_num_or_code(self, value: str) -> int | float | str:
         """
-        Convert a string to either an integer, float, or leaves it as a string.
+        Convert a string to either an integer, float, code, or leaves it as a string.
 
         Args:
         ----
@@ -101,6 +129,17 @@ class BTParser:
             value = int(value)
         elif is_float(value):
             value = float(value)
+        elif is_code(value):
+            code_block = value[2:-1]
+            expr = ast.parse(code_block, mode="eval")
+            modules_to_import = [node.id for node in ast.walk(expr) if isinstance(node, ast.Name)]
+            for module in modules_to_import:
+                if module not in globals():
+                    try:
+                        globals()[module] = importlib.import_module(module)
+                    except ImportError:
+                        self.logger.debug(f"Assuming {module} is a variable")
+            value = eval(compile(expr, "<string>", "eval"))
 
         self.logger.debug(f"Found {type(value)} {value = }")
 
@@ -126,7 +165,7 @@ class BTParser:
                     continue
 
                 key, value = item.split("=")
-                value = self._string_or_num(value)
+                value = self._string_num_or_code(value)
 
                 kwargs[key.strip()] = value
 
@@ -155,39 +194,8 @@ class BTParser:
 
         self.logger.debug("Converting attributes")
         for key, value in node_attribs.items():
-            value = self._string_or_num(value)
-            if not isinstance(value, str):
-                node_attribs[key] = value
-                continue
-
-            try:
-                # check if the value is a function call
-                if "(" in value:
-                    self.logger.debug(f"Possible function {value}")
-                    func, params = value.rsplit("(", 1)
-                    params = params[:-1]  # remove final parenthesis
-                    # get the function handle
-                    _, handle = self._get_handle(func)
-                    self.logger.debug(f"{handle = }")
-                    # remove trailing ) and convert to a dict
-                    kwargs = self._get_kwargs(params[:-1])
-                    # evaluate the function
-                    if len(kwargs) > 0:
-                        self.logger.debug(f"Calling {handle = } with {kwargs = }")
-                        node_attribs[key] = handle(**kwargs)
-                    else:
-                        self.logger.debug(f"Calling {handle = } with no args")
-                        node_attribs[key] = handle()
-                    self.logger.debug(f"Found function {func}")
-                else:
-                    self.logger.debug(f"Checking for handle {value}")
-                    _, handle = self._get_handle(value)
-                    node_attribs[key] = handle
-                    self.logger.debug(f"Found handle {value}")
-            except Exception as ex:
-                self.logger.debug(f"No handle or function associated with {value}")
-                self.logger.debug(f"{ex}")
-                continue
+            value = self._string_num_or_code(value)
+            node_attribs[key] = value
 
         return node_attribs
 
@@ -208,23 +216,24 @@ class BTParser:
         Raises
         ------
             KeyError: If the node_type is not an expected type.
+            BTParseError: If the parsed obj cannot be parsed correctly.
 
         """
         # the expectation is that the xml_node will have a tag that is the
         # class and module name as if your were to import the class into
         # python directly
-        module_name, class_obj = self._get_handle(node_type)
+        module_name, obj = self._get_handle(node_type)
 
-        if not (
-            issubclass(class_obj, py_trees.behaviour.Behaviour)
-            or issubclass(class_obj, py_trees.composites.Composite)
-            or issubclass(class_obj, py_trees.decorators.Decorator)
+        if not isinstance(obj, types.FunctionType) and not (
+            issubclass(obj, py_trees.behaviour.Behaviour)
+            or issubclass(obj, py_trees.composites.Composite)
+            or issubclass(obj, py_trees.decorators.Decorator)
         ):
             raise KeyError(
-                f"{node_type = } was not an expected type (Behavior, Composite, Decorator)"
+                f"{node_type = } was not an expected type (Behavior, Composite, Decorator, Idiom)"
             )
 
-        self.logger.debug(f"Found {module_name = } and {class_obj = }")
+        self.logger.debug(f"Found {module_name = } and {obj = }")
         # name is a special attribute that is handled separately
         name = node_attribs["name"]
         del node_attribs["name"]
@@ -235,12 +244,27 @@ class BTParser:
         node_attribs = self._convert_attribs(node_attribs)
 
         self.logger.debug("Creating node")
-        if len(children) == 0:
-            node = class_obj(name=name, **node_attribs)
-        elif issubclass(class_obj, py_trees.decorators.Decorator):
-            node = class_obj(name=name, child=children[0], **node_attribs)
+        if isinstance(obj, types.FunctionType):
+            parameters = inspect.signature(obj).parameters
+            if "behaviour" in parameters:
+                node = obj(name=name, behaviour=children[0], **node_attribs)
+            elif "subtrees" in parameters:
+                node = obj(name=name, subtrees=children, **node_attribs)
+            elif "tasks" in parameters:
+                node = obj(name=name, tasks=children, **node_attribs)
+            elif len(children) == 0:
+                node = obj(name=name, **node_attribs)
+            else:
+                self.logger.error(f"Unknown node type {node_type}")
+                raise BTParseError(f"Unknown node type {node_type}")
+
+        elif len(children) == 0:
+            node = obj(name=name, **node_attribs)
+        elif issubclass(obj, py_trees.decorators.Decorator):
+            self.logger.debug(f"{node_attribs = }")
+            node = obj(name=name, child=children[0], **node_attribs)
         else:
-            node = class_obj(name=name, children=children, **node_attribs)
+            node = obj(name=name, children=children, **node_attribs)
 
         return node
 

@@ -1,8 +1,8 @@
 <py_trees.composites.Parallel name="SubtreeMain"
-  policy="py_trees.common.ParallelPolicy.SuccessOnAll(synchronise=False)">
+  policy="$(py_trees.common.ParallelPolicy.SuccessOnAll(synchronise=False))">
   <py_trees.composites.Sequence name="Topics2BB" memory="False">
     <py_trees_ros.battery.ToBlackboard name="Battery2BB" topic_name="/battery/state"
-      qos_profile="py_trees_ros.utilities.qos_profile_unlatched()" threshold="30.0" />
+      qos_profile="$(py_trees_ros.utilities.qos_profile_unlatched())" threshold="30.0" />
   </py_trees.composites.Sequence>
   <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
     <xi:include href="test_subtree_sub.xml" parse="xml" />
