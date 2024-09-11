@@ -1,0 +1,5 @@
+<py_trees_ros.action_clients.FromConstant
+  name="TestFunctionParse"
+  action_name="/test"
+  action_type="$(std_msgs.msg.String)"
+  action_goal="$(std_msgs.msg.String(data='hello world'))" />

@@ -20,10 +20,11 @@ rclpy.logging.get_logger("BTParser").set_level(rclpy.logging.LoggingSeverity.DEB
         "test/data/test6.xml",
         "test/data/test_subtree_main.xml",
         "test/data/test_idioms.xml",
+        "test/data/test_function_parse.xml",
     ],
 )
 @log_test_execution
-def test_simple_tree(ros_init, tree_file):
+def test_tree_parser(ros_init, tree_file):
     xml = os.path.join(SHARE_DIR, tree_file)
     parser = BTParser(xml)
     try:
