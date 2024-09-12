@@ -7,7 +7,7 @@ package_name = "behavior_tree"
 
 setup(
     name=package_name,
-    version="0.3.1",
+    version="0.3.2",
     packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/ament_index/resource_index/packages", [os.path.join("resource", package_name)]),
