@@ -2,6 +2,7 @@ import ast
 import importlib
 import inspect
 import types
+from typing import Any
 from xml.etree import ElementInclude, ElementTree
 
 import py_trees
@@ -52,6 +53,48 @@ def is_code(value: str) -> bool:
     return value.startswith("$(") and value.endswith(")")
 
 
+def extract_modules(ast_tree: ast.AST) -> list[str]:
+    """
+    Extract module and submodules from the input AST.
+
+    Args:
+    ----
+        ast_tree (ast.AST): The abstract syntax tree parsed from the input string.
+
+    Returns
+    -------
+        list[str]: A list of strings, where each string represents a module or submodule.
+
+    """
+    modules = set()
+
+    def extract_module_names(node):
+        if isinstance(node, ast.Attribute):
+            # Extract module names from attribute access (e.g., my_module.submodule)
+            module_name = []
+            current_node = node
+            while isinstance(current_node, ast.Attribute):
+                module_name.append(current_node.attr)
+                current_node = current_node.value
+            if isinstance(current_node, ast.Name):
+                module_name.append(current_node.id)
+            modules.add(".".join(reversed(module_name)))
+        elif isinstance(node, ast.Name):
+            # Extract module names from simple names (e.g., my_module)
+            modules.add(node.id)
+        elif isinstance(node, ast.Call):
+            # Recursively extract module names from function calls
+            extract_module_names(node.func)
+        elif isinstance(node, ast.Subscript):
+            # Recursively extract module names from subscript expressions
+            extract_module_names(node.value)
+
+    for node in ast.walk(ast_tree):
+        extract_module_names(node)
+
+    return list(modules)
+
+
 class BTParser:
     """
     A parser for behavior trees.
@@ -74,6 +117,7 @@ class BTParser:
         self.file = file
 
         self.logger = rclpy.logging.get_logger("BTParser")
+        self.logger.set_level(rclpy.logging.LoggingSeverity.DEBUG)
 
     def _get_handle(self, value: str):
         """
@@ -111,7 +155,29 @@ class BTParser:
         self.logger.debug(f"{module_name = }, {obj_name = }, {handle = }")
         return module_name, handle
 
-    def _string_num_or_code(self, value: str) -> int | float | str:
+    def _parse_code(self, value: str) -> Any:
+        code_block = value[2:-1]
+        self.logger.debug(f"Parsing code: {code_block}")
+        expr = ast.parse(code_block, mode="eval")
+        self.logger.debug(ast.dump(expr))
+        modules_to_import = extract_modules(expr)
+        self.logger.debug(f"{modules_to_import = }")
+        for module in modules_to_import:
+            if module not in globals():
+                try:
+                    globals()[module] = importlib.import_module(module)
+                except ImportError:
+                    self.logger.debug(f"Assuming {module} is a variable")
+
+        try:
+            value = eval(compile(expr, "<string>", "eval"))
+        except AttributeError as ex:
+            self.logger.error(f"Evaluation of {code_block = } failed: {ex}")
+            raise ex
+
+        return value
+
+    def _string_num_or_code(self, value: str) -> Any:
         """
         Convert a string to either an integer, float, code, or leaves it as a string.
 
@@ -130,16 +196,7 @@ class BTParser:
         elif is_float(value):
             value = float(value)
         elif is_code(value):
-            code_block = value[2:-1]
-            expr = ast.parse(code_block, mode="eval")
-            modules_to_import = [node.id for node in ast.walk(expr) if isinstance(node, ast.Name)]
-            for module in modules_to_import:
-                if module not in globals():
-                    try:
-                        globals()[module] = importlib.import_module(module)
-                    except ImportError:
-                        self.logger.debug(f"Assuming {module} is a variable")
-            value = eval(compile(expr, "<string>", "eval"))
+            value = self._parse_code(value)
 
         self.logger.debug(f"Found {type(value)} {value = }")
 
