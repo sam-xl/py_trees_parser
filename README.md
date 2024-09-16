@@ -80,33 +80,29 @@ should be done when creating the tree.
 
 ## Behaviors
 
+- `EmitFromFile` (`py_trees.behaviour.Behaviour`): A behavior that sets a
+  blackboard variable given data from a file. Each time the behavior is ticked
+  it will read another line from a file and set a blackboard variable.
 - `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for
   "camera" to `perception` blackboard.
 - `SaveImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image
   for "camera" to drive.
 - `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point
   cloud for "camera" to `perception` blackboard.
+
+### Action Behaviors
+
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action
   client class that sets up most of the steps that are necessary for an
   ActionClient. This requires that any derived class create a `get_request`
   function, which creates the specific goal needed for the desired action.
-- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract
-  service client class that sets up most of the steps that are necessary for a
-  ServiceClient. This requires that any derived class create a `get_request`
-  function, which creates the specific goal needed for the desired service,
-  additionally it requires a `validate_service_response` function that will
-  eventually set `self.success` depending if the response from the service was
-  valid or not.
-
-### Action Behaviors
-
-- `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client
-  that requests object detections from the `ObjectDetection` action server and
-  then saves them to the `perception.objects` blackboard variable.
 - `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that
   requests object id detections from the `ToolIDDetector` action server and
   then updates the `perception.objects` blackboard variable. It matches the
   detected id to the closest object using the pixel location.
+- `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client
+  that requests object detections from the `ObjectDetection` action server and
+  then saves them to the `perception.objects` blackboard variable.
 - `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot
   along the given waypoints.
 - `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint
@@ -116,6 +112,13 @@ should be done when creating the tree.
 
 ### Service Behaviors
 
+- `ServiceClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract
+  service client class that sets up most of the steps that are necessary for a
+  ServiceClient. This requires that any derived class create a `get_request`
+  function, which creates the specific goal needed for the desired service,
+  additionally it requires a `validate_service_response` function that will
+  eventually set `self.success` depending if the response from the service was
+  valid or not.
 - `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior
   triggers an IO signal by calling a specified ABB ROS 2 service (default is
   `/rws_client/set_io_signal`). It supports setting the IO signal to either
