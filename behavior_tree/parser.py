@@ -7,6 +7,7 @@ from xml.etree import ElementInclude, ElementTree
 
 import py_trees
 import rclpy
+from rclpy import logging
 
 
 class BTParseError(Exception):
@@ -110,14 +111,19 @@ class BTParser:
     Args:
     ----
         file (str): The XML file to parse.
+        log_level (logging.LoggingSeverity, optional): The logging level for the parser.
 
     """
 
-    def __init__(self, file: str):
+    def __init__(
+        self,
+        file: str,
+        log_level: logging.LoggingSeverity = logging.LoggingSeverity.INFO,
+    ):
         self.file = file
 
         self.logger = rclpy.logging.get_logger("BTParser")
-        self.logger.set_level(rclpy.logging.LoggingSeverity.DEBUG)
+        self.logger.set_level(log_level)
 
     def _get_handle(self, value: str):
         """
