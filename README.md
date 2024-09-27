@@ -319,6 +319,31 @@ ros2 launch behavior_tree thermoplast.launch.py
     py-trees-render -b behavior_tree.behavior_tree.thermoplast_tree
 ```
 
+### Viewing the Behavior Tree
+
+There are two ways to view the Behavior Tree. The first is has a GUI and
+takes advantage of py-trees-ros-viewer. To view the behavior tree using
+this method you simply run the following command:
+
+```shell
+py-trees-ros-tree-viewer
+```
+
+A GUI will appear that allows you to view the behavior tree. For more
+details see the
+[documentation](https://github.com/splintered-reality/py_trees_ros_viewer).
+
+The second method for viewing the behavior tree will result in the behavior
+tree getting printed in the terminal. The tree will be updated on tick. This
+can be achieved with the following command:
+
+```shell
+py-trees-tree-watcher -b
+```
+
+This command will print the current state of the behavior tree including the
+blackboard. To see more details run `py-trees-tree-watcher --help`.
+
 ### Launch Parameters
 
 The following launch parameters apply to `thermoplast.launch.py`
