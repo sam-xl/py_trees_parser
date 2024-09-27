@@ -33,6 +33,43 @@ from the robot node via the `Robot.lookup_transform` function. This is just a
 convenience wrapper to the `tf2_ros.lookup_transform` function and is used in
 the same manner.
 
+### Sensor Configuration
+
+To configure the sensors to be used by the robot node, yaml can be passed to
+the sensors parameter. The yaml should contain all sensors types, the sensor
+name, and the topic to listen to. Additionally, any `camera_info` with their
+sensor name and topics should also be included.
+
+#### Example
+
+```yaml
+sensors:
+  rgb:
+    webcam: "/camera/webcam/color/image_raw"
+    realsense: "/camera/realsense/color/image_raw"
+  depth:
+    realsense: "/camera/realsense/depth/image_rect_raw"
+  camera_info:
+    webcam_rgb: "/camera/webcam/color/camera_info"
+    realsense_rgb: "/camera/realsense/color/camera_info"
+    realsense_depth: "/camera/realsense/depth/camera_info"
+```
+
+### Trigger Configuration
+
+Similarly to the sensor configuration the robot node can have triggers configured
+via passing a yaml list to the `triggers` parameter. The list of triggers should
+contain the service topic that the trigger service is listening on.
+
+#### Example
+
+```yaml
+triggers:
+  - /triggers/service1
+  - /triggers/service2
+  - /triggers/service3
+```
+
 ## Blackboards
 
 - `State`: This blackboard contains the keys related to the state of the robot,
