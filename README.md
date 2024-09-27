@@ -58,16 +58,16 @@ sensors:
 ### Trigger Configuration
 
 Similarly to the sensor configuration the robot node can have triggers configured
-via passing a yaml list to the `triggers` parameter. The list of triggers should
-contain the service topic that the trigger service is listening on.
+via passing a yaml the `triggers` parameter. The triggers should contain the name
+of the service and the service topic that the trigger service is listening on.
 
 #### Example
 
 ```yaml
 triggers:
-  - /triggers/service1
-  - /triggers/service2
-  - /triggers/service3
+    service1: /triggers/service1
+    service2: /triggers/service2
+    service3: /triggers/service3
 ```
 
 ## Blackboards
