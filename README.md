@@ -326,7 +326,7 @@ takes advantage of py-trees-ros-viewer. To view the behavior tree using
 this method you simply run the following command:
 
 ```shell
-py-trees-ros-tree-viewer
+py-trees-tree-viewer
 ```
 
 A GUI will appear that allows you to view the behavior tree. For more
