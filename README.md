@@ -55,7 +55,7 @@ sensors:
     realsense_depth: "/camera/realsense/depth/camera_info"
 ```
 
-### Trigger Configuration
+### Trigger Configuration<a name="trigger-configuration"/>
 
 Similarly to the sensor configuration the robot node can have triggers configured
 via passing a yaml the `triggers` parameter. The triggers should contain the name
@@ -132,6 +132,8 @@ should be done when creating the tree.
   for "camera" to drive.
 - `SavePointCloud` ([`py_python.behavior.Behaviour`]): Save the current point
   cloud for "camera" to `perception` blackboard.
+- `Trigger` ([`py_trees.behaviour.Behaviour`]`]): Send a trigger for the given
+  trigger name. (see [triggers](#trigger-configuration) for details)
 
 ### Action Behaviors
 
