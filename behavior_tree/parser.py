@@ -54,6 +54,25 @@ def is_code(value: str) -> bool:
     return value.startswith("$(") and value.endswith(")")
 
 
+def is_arg(value: str) -> bool:
+    """
+    Check if a string is intended to be an argument.
+
+    This will check if a string is surrounded by ${}, which indicates it is intended to be an
+    argument.
+
+    Args:
+    ----
+        value: The string to check.
+
+    Returns
+    -------
+        True if the string represents an argument, False otherwise.
+
+    """
+    return value.startswith("${") and value.endswith("}")
+
+
 def extract_modules(ast_tree: ast.AST) -> list[str]:
     """
     Extract module and submodules from the input AST.
@@ -125,7 +144,7 @@ class BTParser:
         self.logger = rclpy.logging.get_logger("BTParser")
         self.logger.set_level(log_level)
 
-    def _get_handle(self, value: str):
+    def _get_handle(self, value: str) -> tuple[str, Any]:
         """
         Retrieve a handle (i.e., a module or function) from a string.
 
@@ -262,7 +281,9 @@ class BTParser:
 
         return node_attribs
 
-    def _create_node(self, node_type: str, children: list, node_attribs: dict):
+    def _create_node(
+        self, node_type: str, children: list, node_attribs: dict
+    ) -> py_trees.behaviour.Behaviour:
         """
         Create a node in the behavior tree.
 
@@ -331,13 +352,33 @@ class BTParser:
 
         return node
 
-    def _build_tree(self, xml_node: ElementTree):
+    def _sub_args(self, xml_node: ElementTree, args: dict) -> None:
+        """
+        Substitute arguments in the subtree.
+
+        Args:
+        ----
+            xml_node (ElementTree): The XML node to substitute arguments in.
+            args (dict[str, str]): Arguments to substitute in the subtree.
+
+        """
+        for attr_name, attr_value in list(xml_node.attrib.items()):
+            if is_arg(attr_value):
+                var_name = attr_value[2:-1]
+                if var_name in args:
+                    self.logger.debug(f"Substituting {attr_value} with {args[var_name]}")
+                    xml_node.set(attr_name, args[var_name])
+                else:
+                    self.logger.warning(f"No match for {var_name} in subtree")
+
+    def _build_tree(self, xml_node: ElementTree, args: dict = {}) -> py_trees.behaviour.Behaviour:
         """
         Build the behavior tree from an XML node.
 
         Args:
         ----
             xml_node (ElementTree): The XML node to build the tree from.
+            args (list[tuple[str, str]]): Arguments for substitutions in elements.
 
         Returns
         -------
@@ -348,16 +389,27 @@ class BTParser:
             self.logger.warn("Received an xml_node of type None this shouldn't happen")
             return None
 
-        self.logger.debug(f"{xml_node.tag = }, {xml_node.attrib = }")
-
         if xml_node.tag.lower() == "subtree":
-            self.logger.debug("Found subtree")
-            return self._build_tree(xml_node[0])
+            self.logger.debug(f"Found subtree: {xml_node}")
+            args = {}
+            for child_xml in xml_node:
+                if child_xml.tag.lower() == "arg":  # create argument dict
+                    name = child_xml.attrib.get("name")
+                    value = child_xml.attrib.get("value")
+                    args[name] = value
+                    self.logger.debug(f"Found arg: {name} = {value}")
+                else:  # no more args so parse subtree
+                    self.logger.debug(
+                        f"Parsing subtree starting with tag: {child_xml.tag.lower()}"
+                    )
+                    self._sub_args(child_xml, args)
+                    return self._build_tree(child_xml, args)
 
         # we only need to find children if the node is a composite
         children = list()
-        for child_xml_node in xml_node:
-            child = self._build_tree(child_xml_node)
+        for child_xml in xml_node:
+            self._sub_args(child_xml, args)
+            child = self._build_tree(child_xml)
             children.append(child)
 
         # build the actual node
@@ -365,7 +417,7 @@ class BTParser:
 
         return node
 
-    def parse(self):
+    def parse(self) -> py_trees.behaviour.Behaviour:
         """
         Parse the XML file and build the behavior tree.
 
