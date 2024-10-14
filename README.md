@@ -309,7 +309,7 @@ It is also possible to use arguments for subtrees. The syntax of which looks lik
 
 ```xml
 <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-    <arg name="foo" value="bar"
+    <arg name="foo" value="bar" />
     <xi:include href="subtree/subtree.xml" parse="xml" />
 </subtree>
 ```
