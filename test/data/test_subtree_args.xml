@@ -1,0 +1,4 @@
+<py_trees.composites.Selector name="${selector_name}" memory="False">
+  <py_trees.behaviours.Running name="${idle_name}" />
+  <py_trees.behaviours.Periodic name="${flip_name}" n="${n}" />
+</py_trees.composites.Selector>

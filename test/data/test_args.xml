@@ -1,0 +1,7 @@
+<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+  <arg name="selector_name" value="Subtree Selector" />
+  <arg name="idle_name" value="Idle" />
+  <arg name="flip_name" value="Flip Eggs" />
+  <arg name="n" value="2" />
+  <xi:include href="test_subtree_args.xml" parse="xml" />
+</subtree>

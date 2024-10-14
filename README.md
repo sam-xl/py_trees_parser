@@ -305,6 +305,23 @@ and we then include `subtree3.xml` in `subtree1.xml` the location of
 </subtree>
 ```
 
+It is also possible to use arguments for subtrees. The syntax of which looks like
+
+```xml
+<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+    <arg name="foo" value="bar"
+    <xi:include href="subtree/subtree.xml" parse="xml" />
+</subtree>
+```
+
+with subtree
+
+```xml
+<py_trees.composites.Sequence name="Arg Tutorial">
+    <py_trees.behaviors.Success name="${foo}" />
+</py_trees.composites.Sequence>
+```
+
 ## Running the Behavior Tree
 
 ### Launch the Behavior Tree:
