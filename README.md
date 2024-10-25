@@ -173,6 +173,8 @@ should be done when creating the tree.
   additionally it requires a `validate_service_response` function that will
   eventually set `self.success` depending if the response from the service was
   valid or not.
+- `PlanCartesian` ([`behavior_tree.behaviors.ServiceClient`]): Plan robot
+  movement along the given waypoints.
 - `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior
   triggers an IO signal by calling a specified ABB ROS 2 service (default is
   `/rws_client/set_io_signal`). It supports setting the IO signal to either
