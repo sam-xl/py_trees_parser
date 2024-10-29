@@ -76,7 +76,7 @@ triggers:
   which includes the robot node and the state.
 - `Perception`: This blackboard contains the keys related to the perception
   stack of the robot, which includes images, point clouds, objects, etc.
-- `Movement`: This blackboard contains the keys related to the movement of the
+- `ment`: This blackboard contains the keys related to the movement of the
   robot, which would include things like waypoints.
 
 When creating the blackboards you would want to follow the pattern below:
@@ -157,12 +157,13 @@ should be done when creating the tree.
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client
   that requests object detections from the `ObjectDetection` action server and
   then saves them to the `perception.objects` blackboard variable.
-- `MoveCartesian` ([`behavior_tree.behaviors.ActionClient`]): Move the robot
+- `Move` ([`behavior_tree.behaviors.ActionClient`]): Plan robot motion
   along the given waypoints.
-- `MoveJoint` ([`behavior_tree.behaviors.ActionClient`]): Move robot to a joint
-  configuration by providing a `link_name` and `target_pose_key`.
-- `MoveToNamedTarget` ([`behavior_tree.behaviors.ActionClient`]): Move the
-  robot to a joint_configuration predefined by name.
+- `PlanJointMotion` ([`behavior_tree.behaviors.PlanJoinSpaceMotion`]): Plan
+  robot movement to a joint configuration by providing a `link_name` and
+  `target_pose_key`.
+- `PlanToNamedTarget` ([`behavior_tree.behaviors.PlanJoinSpaceMotion`]): Plan
+  robot movement to a joint_configuration predefined by name.
 
 ### Service Behaviors
 
@@ -191,13 +192,13 @@ The components that could make up the process of `pick&place` are created as
 
 We distinguish three different types of motion requests:
 
-- `MoveCartesian`: By providing among others a `list of waypoints`, motions
+- `Cartesian`: By providing among others a `list of waypoints`, motions
   like __approaching__ a pick/place pose or __retreating__ from one could be
   achieved with cartesian planning ensuring a linear movement.
-- `MoveJoint`: To reach a specific joint pose in order to __rotate
-  end-effector__ for example, the user can send a `MoveJoint` request by
+- `Joint`: To reach a specific joint pose in order to __rotate
+  end-effector__ for example, the user can send a `Joint` request by
   specifying a `target_pose_key` where the _goal pose_ would be stored.
-- `MoveToNamedTarget`: By providing a priorly configured `named_target` i.e. a
+- `ToNamedTarget`: By providing a priorly configured `named_target` i.e. a
   `named_joint_configuration`, the robot can move to "general areas of
   interest" notably __general pick/place location__, __inspection_station__ or
   __open/close fingers__ for a finger gripper...
