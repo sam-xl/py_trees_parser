@@ -154,15 +154,15 @@ should be done when creating the tree.
   requests object id detections from the `ToolIDDetector` action server and
   then updates the `perception.objects` blackboard variable. It matches the
   detected id to the closest object using the pixel location.
-- `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client
+- `DetectObjects` ([`behavior_tree.ActionClient`]): An action client
   that requests object detections from the `ObjectDetection` action server and
   then saves them to the `perception.objects` blackboard variable.
 - `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion
   along the given waypoints.
-- `PlanJointMotion` ([`behavior_tree.behaviors.PlanJoinSpaceMotion`]): Plan
+- `PlanJointMotion` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan
   robot movement to a joint configuration by providing a `link_name` and
   `target_pose_key`.
-- `PlanToNamedTarget` ([`behavior_tree.behaviors.PlanJoinSpaceMotion`]): Plan
+- `PlanToNamedTarget` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan
   robot movement to a joint_configuration predefined by name.
 
 ### Service Behaviors
@@ -174,9 +174,9 @@ should be done when creating the tree.
   additionally it requires a `validate_service_response` function that will
   eventually set `self.success` depending if the response from the service was
   valid or not.
-- `PlanCartesian` ([`behavior_tree.behaviors.ServiceClient`]): Plan robot
+- `PlanCartesian` ([`behavior_tree.ServiceClient`]): Plan robot
   movement along the given waypoints.
-- `SetABBIOSignal` ([`behavior_tree.behaviors.ServiceClient`]): This behavior
+- `SetABBIOSignal` ([`behavior_tree.ServiceClient`]): This behavior
   triggers an IO signal by calling a specified ABB ROS 2 service (default is
   `/rws_client/set_io_signal`). It supports setting the IO signal to either
   high or low based on the trigger_on parameter. The behavior validates the
@@ -187,21 +187,24 @@ should be done when creating the tree.
 ### Pick & Place pipeline
 
 The components that could make up the process of `pick&place` are created as
-`ActionClient` behaviors and can be found in
-`/behavior_tree/behaviors/move.py`.
+`ActionClient`s and `ServiceClient`s. The planning and movement are separate
+and so a movement consists of a planning stage followed by the movement stage.
+The movement is accomplished via the action `behavior_tree.actions.Move`.
 
 We distinguish three different types of motion requests:
 
-- `Cartesian`: By providing among others a `list of waypoints`, motions
-  like __approaching__ a pick/place pose or __retreating__ from one could be
-  achieved with cartesian planning ensuring a linear movement.
-- `Joint`: To reach a specific joint pose in order to __rotate
-  end-effector__ for example, the user can send a `Joint` request by
-  specifying a `target_pose_key` where the _goal pose_ would be stored.
-- `ToNamedTarget`: By providing a priorly configured `named_target` i.e. a
-  `named_joint_configuration`, the robot can move to "general areas of
-  interest" notably __general pick/place location__, __inspection_station__ or
-  __open/close fingers__ for a finger gripper...
+- `behavior_tree.services.PlanCartesian`: By providing among others a
+  `list of waypoints`, motions like __approaching__ a pick/place pose or
+  __retreating__ from one could be achieved with cartesian planning ensuring a
+  linear movement.
+- `behavior_tree.actions.PlanJointMotion`: To reach a specific joint pose in
+  order to __rotate end-effector__ for example, the user can send a `Joint`
+  request by specifying a `target_pose_key` where the _goal pose_ would be
+  stored.
+- `behavior_tree.actions.PlanToNamedTarget`: By providing a priorly configured
+  `named_target` i.e. a `named_joint_configuration`, the robot can move to
+  "general areas of interest" notably __general pick/place location__,
+  __inspection_station__ or __open/close fingers__ for a finger gripper...
 
 _____
 It is necessary to create a specific __gripper_behavior__ depending on its type
