@@ -130,7 +130,8 @@ should be done when creating the tree.
   respectively.
 - `EmitFromFile` (`py_trees.behaviour.Behaviour`): A behavior that sets a
   blackboard variable given data from a file. Each time the behavior is ticked
-  it will read another line from a file and set a blackboard variable.
+  it will read another line from a file and set a blackboard variable. If all
+  messages have been published it will continue from the beginning of the file.
 - `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for
   "camera" to `perception` blackboard.
 - `SaveImageToDrive` ([`py_python.behavior.Behaviour`]): Save the current image
