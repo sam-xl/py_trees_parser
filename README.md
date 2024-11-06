@@ -187,16 +187,16 @@ should be done when creating the tree.
 ### Pick & Place pipeline
 
 The components that could make up the process of `pick&place` are created as
-`ActionClient`s and `ServiceClient`s. The planning and movement are separate
-and so a movement consists of a planning stage followed by the movement stage.
-The movement is accomplished via the action `behavior_tree.actions.Move`.
+`ActionClient`s and `ServiceClient`s. The planning and motion are separate
+and so a robot motion consists of a planning stage followed by an execution
+stage. The motion is accomplished via the action `behavior_tree.actions.Move`.
 
 We distinguish three different types of motion requests:
 
 - `behavior_tree.services.PlanCartesian`: By providing among others a
   `list of waypoints`, motions like __approaching__ a pick/place pose or
   __retreating__ from one could be achieved with cartesian planning ensuring a
-  linear movement.
+  linear motion.
 - `behavior_tree.actions.PlanJointMotion`: To reach a specific joint pose in
   order to __rotate end-effector__ for example, the user can send a `Joint`
   request by specifying a `target_pose_key` where the _goal pose_ would be
