@@ -76,7 +76,7 @@ triggers:
   which includes the robot node and the state.
 - `Perception`: This blackboard contains the keys related to the perception
   stack of the robot, which includes images, point clouds, objects, etc.
-- `ment`: This blackboard contains the keys related to the movement of the
+- `Movement`: This blackboard contains the keys related to the movement of the
   robot, which would include things like waypoints.
 
 When creating the blackboards you would want to follow the pattern below:
@@ -157,7 +157,7 @@ should be done when creating the tree.
 - `DetectObjects` ([`behavior_tree.behaviors.ActionClient`]): An action client
   that requests object detections from the `ObjectDetection` action server and
   then saves them to the `perception.objects` blackboard variable.
-- `Move` ([`behavior_tree.behaviors.ActionClient`]): Plan robot motion
+- `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion
   along the given waypoints.
 - `PlanJointMotion` ([`behavior_tree.behaviors.PlanJoinSpaceMotion`]): Plan
   robot movement to a joint configuration by providing a `link_name` and
