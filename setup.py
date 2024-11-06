@@ -17,7 +17,15 @@ setup(
             glob(os.path.join("launch", "*launch.[pxy][yma]*")),
         ),
         (os.path.join("share", package_name, "config"), glob(os.path.join("config", "*.yml"))),
-        (os.path.join("share", package_name, "demo1"), glob(os.path.join("poses", "*.yml"))),
+        (os.path.join("share", package_name, "poses"), glob(os.path.join("poses", "*.yml"))),
+        (
+            os.path.join("share", package_name, "poses", "demo1"),
+            glob(os.path.join("poses", "demo1", "*.yml")),
+        ),
+        (
+            os.path.join("share", package_name, "poses", "demo2"),
+            glob(os.path.join("poses", "demo2", "*.yml")),
+        ),
         (os.path.join("share", package_name, "trees"), glob(os.path.join("trees", "*.xml"))),
         (
             os.path.join("share", package_name, "test", "data"),
