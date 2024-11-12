@@ -139,6 +139,8 @@ should be done when creating the tree.
   cloud for "camera" to `perception` blackboard.
 - `Trigger` ([`py_trees.behaviour.Behaviour`]`]): Send a trigger for the given
   trigger name. (see [triggers](#trigger-configuration) for details)
+- `TransformToBlackboard` ([`py_python.behavior.Behaviour`]): Save the requested
+  transformation to the blackboard.
 
 ### Action Behaviors
 
