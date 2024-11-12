@@ -107,10 +107,9 @@ should be done when creating the tree.
 
 - `ContinueCancel` ([`py_trees.decorators.Decorator`]): This decorator waits
   for a key press from the user, it will continue to return
-  `py_trees.common.Status.RUNNING` until the desired `continue_key` or
-  `cancel_key` is pressed, at which point it will return
-  `py_trees.common.Status.SUCCESS` or `py_trees.common.Status.FAILURE`,
-  respectively.
+  `py_trees.common.Status.RUNNING` until the `continue_key` or `cancel_key` is
+  pressed, at which point it will return `py_trees.common.Status.SUCCESS` or the
+  childs last status, respectively.
 - `RepeatFromBlackboard`: This is a decorator similar to the
   `py_trees.decorators.Repeat`, however instead of having the number of
   successes specified when creating the `Repeat` decorator a `num_key` is
@@ -123,6 +122,12 @@ should be done when creating the tree.
 
 ## Behaviors
 
+- `ContinueCancel` ([`py_trees.behaviour.Behaviour`]): This behavior waits
+  for a key press from the user, it will continue to return
+  `py_trees.common.Status.RUNNING` until the `continue_key` or
+  `cancel_key` is pressed, at which point it will return
+  `py_trees.common.Status.SUCCESS` or `py_trees.common.Status.FAILURE`,
+  respectively.
 - `EmitFromFile` (`py_trees.behaviour.Behaviour`): A behavior that sets a
   blackboard variable given data from a file. Each time the behavior is ticked
   it will read another line from a file and set a blackboard variable.
