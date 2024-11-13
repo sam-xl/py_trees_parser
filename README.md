@@ -144,7 +144,7 @@ should be done when creating the tree.
 
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action
   client class that sets up most of the steps that are necessary for an
-  ActionClient. This requires that any derived class create `get_action_goal`
+  ActionClient. This requires that any derived class create `get_goal`
   `process_action_result` functions, which creates the specific goal needed for
    the desired action and process the action result and returns the appropriate
    `py_trees.common.Status`, respectively.
