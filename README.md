@@ -146,8 +146,10 @@ should be done when creating the tree.
   client class that sets up most of the steps that are necessary for an
   ActionClient. This requires that any derived class create `get_goal`
   `validate_result` functions, which creates the specific goal needed for
-  the desired action and validates/processes the action result and returns the
-  appropriate `py_trees.common.Status`, respectively.
+  the desired action and validates/processes the action result, respectively.
+  The `get_goal` method should return the goal request for the action while
+  `validate_result` should return a `tuple[bool, str]` contains the result and
+  the feedback string.
 - `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that
   requests object id detections from the `ToolIDDetector` action server and
   then updates the `perception.objects` blackboard variable. It matches the
