@@ -28,6 +28,10 @@ from the robot node via the `Robot.lookup_transform` function. This is just a
 convenience wrapper to the `tf2_ros.lookup_transform` function and is used in
 the same manner.
 
+For the `Robot` node to be completely setup it is required to run `robot.setup()`.
+This will load the `triggers`, and `sensors` and will setup the subscriptions for
+those items.
+
 ### Sensor Configuration
 
 To configure the sensors to be used by the robot node, yaml can be passed to
@@ -84,7 +88,9 @@ from behavior_tree.data import Blackboards
 
 blackboard = Blackboards()
 blackboard.set("state", key="state", value=State())
-blackboard.set("state", key="robot", value=Robot())
+robot = Robot()
+robot.setup()  # required for sensor and trigger setup
+blackboard.set("state", key="robot", value=robot)
 blackboard.set("perception", key="objects", value=None)
 blackboard.set("movement", key="waypoints", value=None)
 ```
@@ -95,8 +101,17 @@ the blackboard like "waypoints" or "objects" if you attempt to access them
 before they have been set you will receive a `KeyError`, so be aware of this
 when accessing variables.
 
-Additionally, be aware that the Robot node only needs to be created once and
-should be done when creating the tree.
+Additionally, be aware that the `Robot` node only needs to be created once and
+should be done when creating the tree. Ideally, one would create the tree and
+then add the `Robot` node to the tree in the following way:
+
+```
+    tree = py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
+    tree.setup(node=robot, timeout=15.0)
+```
+
+This will set the `Robot` node as the `py_trees_ros` node. Thus only one ros
+node will exist in the tree unless another is created.
 
 ## Decorators
 
@@ -333,7 +348,7 @@ ros2 launch behavior_tree example_tree.launch.py
 
 ### Render a Tree
 
-To be able to render tree, open a terminal and run the following: 
+To be able to render tree, open a terminal and run the following:
 
 ```shell
     py-trees-render behavior_tree.behavior_tree.view_tree -b -v --kwargs='{"xml_file": "name_tree.xml"}'
