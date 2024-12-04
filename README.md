@@ -333,23 +333,13 @@ ros2 launch behavior_tree example_tree.launch.py
 
 ### Render a Tree
 
-To be able to render tree you can add these lines below to your module
-
-```python
-def example_tree() -> py_trees_ros.trees.BehaviourTree:
-    """Create the PROJECT tree."""
-    rclpy.init()
-    robot, blackboard = setup_blackboard()  # noqa
-    xml = os.path.join(SHARE_DIR, "trees", "example_tree.xml")
-    rclpy.try_shutdown()
-
-    return create_tree(xml)
-```
-then in a terminal, run the following: 
+To be able to render tree, open a terminal and run the following: 
 
 ```shell
-    py-trees-render -b behavior_tree.behavior_tree.example_tree
+    py-trees-render behavior_tree.behavior_tree.view_tree -b -v --kwargs='{"xml_file": "name_tree.xml"}'
 ```
+
+**Make sure the value of `share_path` ros parameter is set to your own package as this method looks for the xml file under `share_path/trees/`.**
 
 ### Viewing the Behavior Tree
 
