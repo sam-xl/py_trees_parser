@@ -351,10 +351,8 @@ ros2 launch behavior_tree example_tree.launch.py
 To be able to render tree, open a terminal and run the following:
 
 ```shell
-    py-trees-render behavior_tree.behavior_tree.view_tree -b -v --kwargs='{"xml_file": "name_tree.xml"}'
+    py-trees-render behavior_tree.bt.view_tree -b -v --kwargs='{"xml_file": "/path/to/tree_file.xml"}'
 ```
-
-**Make sure the value of `share_path` ros parameter is set to your own package as this method looks for the xml file under `share_path/trees/`.**
 
 ### Viewing the Behavior Tree
 
@@ -401,7 +399,7 @@ The following launch parameters apply to `thermoplast.launch.py`
 ## Relevant Links
 
 <!-- links -->
-[py_trees_ros.subscribers.ToBlackboard]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.ToBlackboard
-[py_trees_ros.actions.ActionClient]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#module-py_trees_ros.action_clients
-[behavior_tree.behaviors.ServiceClient]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/behavior_tree/-/blob/humble/behavior_tree/behaviors/service_client.py
-[py_trees.timers.Timer]: https://py-trees.readthedocs.io/en/release-2.2.x/modules.html#py_trees.timers.Timer
+[py_trees]: https://github.com/splintered-reality/py_trees
+[py_trees_ros]: https://github.com/splintered-reality/py_trees_ros
+[py_trees_ros_viewer]: https://github.com/splintered-reality/py_trees_ros_viewer
+[py_trees_ros_tutorials]: https://github.com/splintered-reality/py_trees_ros_tutorials
