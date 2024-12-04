@@ -1,6 +1,7 @@
 # Behavior Tree
 
-This is the SAM XL behavior tree module. It contains generic behaviors for perception and for simple motion planning and executing.
+This is the SAM XL behavior tree module. It contains generic behaviors for
+perception and for simple motion planning and executing.
 
 ## Dependencies
 
@@ -28,9 +29,9 @@ from the robot node via the `Robot.lookup_transform` function. This is just a
 convenience wrapper to the `tf2_ros.lookup_transform` function and is used in
 the same manner.
 
-For the `Robot` node to be completely setup it is required to run `robot.setup()`.
-This will load the `triggers`, and `sensors` and will setup the subscriptions for
-those items.
+For the `Robot` node to be completely setup it is required to run
+`robot.setup()`. This will load the `triggers`, and `sensors` and will setup
+the subscriptions for those items.
 
 ### Sensor Configuration
 
@@ -56,9 +57,10 @@ sensors:
 
 ### Trigger Configuration<a name="trigger-configuration"/>
 
-Similarly to the sensor configuration the robot node can have triggers configured
-via passing a yaml the `triggers` parameter. The triggers should contain the name
-of the service and the service topic that the trigger service is listening on.
+Similarly to the sensor configuration the robot node can have triggers
+configured via passing a yaml the `triggers` parameter. The triggers should
+contain the name of the service and the service topic that the trigger service
+is listening on.
 
 #### Example
 
@@ -106,8 +108,8 @@ should be done when creating the tree. Ideally, one would create the tree and
 then add the `Robot` node to the tree in the following way:
 
 ```
-    tree = py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
-    tree.setup(node=robot, timeout=15.0)
+  tree = py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
+  tree.setup(node=robot, timeout=15.0)
 ```
 
 This will set the `Robot` node as the `py_trees_ros` node. Thus only one ros
@@ -132,15 +134,14 @@ node will exist in the tree unless another is created.
 
 ## Behaviors
 
-- `ContinueCancel` ([`py_trees.behaviour.Behaviour`]): This behavior waits
-  for a key press from the user, it will continue to return
-  `py_trees.common.Status.RUNNING` until the `continue_key` or
-  `cancel_key` is pressed, at which point it will return
-  `py_trees.common.Status.SUCCESS` or `py_trees.common.Status.FAILURE`,
-  respectively.
+- `ContinueCancel` ([`py_trees.behaviour.Behaviour`]): This behavior waits for
+  a key press from the user, it will continue to return
+`py_trees.common.Status.RUNNING` until the `continue_key` or `cancel_key` is
+  pressed, at which point it will return `py_trees.common.Status.SUCCESS` or
+  `py_trees.common.Status.FAILURE`, respectively.
 - `EmitFromFile` (`py_trees.behaviour.Behaviour`): A behavior that sets a
-  blackboard variable given data from a file. Each time the behavior is ticked
-  it will read another line from a file and set a blackboard variable. If all
+  blackboard variable given data from a file. Each time the behavior is ticked it
+  will read another line from a file and set a blackboard variable. If all
   messages have been published it will continue from the beginning of the file.
 - `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for
   "camera" to `perception` blackboard.
@@ -150,26 +151,26 @@ node will exist in the tree unless another is created.
   cloud for "camera" to `perception` blackboard.
 - `Trigger` ([`py_trees.behaviour.Behaviour`]`]): Send a trigger for the given
   trigger name. (see [triggers](#trigger-configuration) for details)
-- `TransformToBlackboard` ([`py_python.behavior.Behaviour`]): Save the requested
-  transformation to the blackboard.
+- `TransformToBlackboard` ([`py_python.behavior.Behaviour`]): Save the
+  requested transformation to the blackboard.
 
 ### Action Behaviors
 
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action
   client class that sets up most of the steps that are necessary for an
   ActionClient. This requires that any derived class create `get_goal`
-  `validate_result` functions, which creates the specific goal needed for
-  the desired action and validates/processes the action result, respectively.
-  The `get_goal` method should return the goal request for the action while
+  `validate_result` functions, which creates the specific goal needed for the
+  desired action and validates/processes the action result, respectively. The
+  `get_goal` method should return the goal request for the action while
   `validate_result` should return a `tuple[bool, str]` contains the result and
   the feedback string.
-- `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion
-  along the given waypoints.
-- `PlanJointMotion` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan
-  robot movement to a joint configuration by providing a `link_name` and
-  `target_pose_key`.
-- `PlanToNamedTarget` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan
-  robot movement to a joint_configuration predefined by name.
+- `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion along
+ the given waypoints.
+- `PlanJointMotion` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan robot
+ movement to a joint configuration by providing a `link_name` and
+ `target_pose_key`.
+- `PlanToNamedTarget` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan robot
+ movement to a joint_configuration predefined by name.
 
 ### Service Behaviors
 
