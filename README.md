@@ -1,16 +1,11 @@
 # Behavior Tree
 
-This is the SAM XL behavior tree module. It contains behaviors that are
-developed for Thermoplast project but could be reusable in other applications.
+This is the SAM XL behavior tree module. It contains generic behaviors for perception and for simple motion planning and executing.
 
 ## Dependencies
 
-- abb_robot_msgs
-- damage_inspection_msgs
 - ElementTree
 - geometry_msgs
-- object_segmentation
-- object_segmentation_msgs
 - python-pcl
 - ros-humble
 - ros-humble-py-trees
@@ -153,13 +148,6 @@ should be done when creating the tree.
   The `get_goal` method should return the goal request for the action while
   `validate_result` should return a `tuple[bool, str]` contains the result and
   the feedback string.
-- `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that
-  requests object id detections from the `ToolIDDetector` action server and
-  then updates the `perception.objects` blackboard variable. It matches the
-  detected id to the closest object using the pixel location.
-- `DetectObjects` ([`behavior_tree.ActionClient`]): An action client
-  that requests object detections from the `ObjectDetection` action server and
-  then saves them to the `perception.objects` blackboard variable.
 - `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion
   along the given waypoints.
 - `PlanJointMotion` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan
@@ -179,13 +167,6 @@ should be done when creating the tree.
   valid or not.
 - `PlanCartesian` ([`behavior_tree.ServiceClient`]): Plan robot
   movement along the given waypoints.
-- `SetABBIOSignal` ([`behavior_tree.ServiceClient`]): This behavior
-  triggers an IO signal by calling a specified ABB ROS 2 service (default is
-  `/rws_client/set_io_signal`). It supports setting the IO signal to either
-  high or low based on the trigger_on parameter. The behavior validates the
-  response to determine if the service call was successful, and updates its
-  status accordingly. This behavior is useful for controlling external devices
-  connected to the ABB like pneumatic cylinders via ROS 2 services.
 
 ### Pick & Place pipeline
 
@@ -212,7 +193,7 @@ We distinguish three different types of motion requests:
 _____
 It is necessary to create a specific __gripper_behavior__ depending on its type
 (fingers, suction, magnetic...) and how it is connected to the robot system.
-One example to be used in Thermoplast is `SetABBIOSignal` which can
+One example used in Thermoplast is `SetABBIOSignal` which can
 activate/deactivate the signal of the magnetic gripper.
 ____
 The _pick & place pipeline_ can then be composed of the different motion
@@ -347,13 +328,27 @@ with subtree
 ### Launch the Behavior Tree:
 
 ```bash
-ros2 launch behavior_tree thermoplast.launch.py
+ros2 launch behavior_tree example_tree.launch.py
 ```
 
 ### Render a Tree
 
+To be able to render tree you can add these lines below to your module
+
+```python
+def example_tree() -> py_trees_ros.trees.BehaviourTree:
+    """Create the PROJECT tree."""
+    rclpy.init()
+    robot, blackboard = setup_blackboard()  # noqa
+    xml = os.path.join(SHARE_DIR, "trees", "example_tree.xml")
+    rclpy.try_shutdown()
+
+    return create_tree(xml)
+```
+then in a terminal, run the following: 
+
 ```shell
-    py-trees-render -b behavior_tree.behavior_tree.thermoplast_tree
+    py-trees-render -b behavior_tree.behavior_tree.example_tree
 ```
 
 ### Viewing the Behavior Tree
@@ -404,6 +399,4 @@ The following launch parameters apply to `thermoplast.launch.py`
 [py_trees_ros.subscribers.ToBlackboard]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.ToBlackboard
 [py_trees_ros.actions.ActionClient]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#module-py_trees_ros.action_clients
 [behavior_tree.behaviors.ServiceClient]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/behavior_tree/-/blob/humble/behavior_tree/behaviors/service_client.py
-[capture_image]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/SaveImage.action?ref_type=heads
-[damage_inspection]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/DetectDamage.action?ref_type=heads
 [py_trees.timers.Timer]: https://py-trees.readthedocs.io/en/release-2.2.x/modules.html#py_trees.timers.Timer
