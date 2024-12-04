@@ -1,6 +1,19 @@
 Changelog for package behavior_tree
 
 .. This is only a rough description of the main changes of the repository
+0.5.0 (2024-10-14)
+------------------
+* Use `args` in subtrees
+
+0.4.0 (2024-09-18)
+------------------
+* Make `ImageDict` more encapsulated, by adding setters and getters
+* Remove Thermoplast specific sensors from `ImageDict`
+* Generalize `Robot._sensors` and its subscriptions
+* Generalize `Robot._triggers` and its services
+* Fix bug in `camera_info` subscription that used wrong data type
+* Improve encapsulation of Robot
+
 0.3.0 (2024-09-03)
 ------------------
 * Added support for idioms
