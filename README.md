@@ -1,16 +1,12 @@
 # Behavior Tree
 
-This is the SAM XL behavior tree module. It contains behaviors that are
-developed for Thermoplast project but could be reusable in other applications.
+This is the SAM XL behavior tree module. It contains generic behaviors for
+perception and for simple motion planning and executing.
 
 ## Dependencies
 
-- abb_robot_msgs
-- damage_inspection_msgs
 - ElementTree
 - geometry_msgs
-- object_segmentation
-- object_segmentation_msgs
 - python-pcl
 - ros-humble
 - ros-humble-py-trees
@@ -32,6 +28,10 @@ dictionary within the robot node. As for the tf tree one obtains transforms
 from the robot node via the `Robot.lookup_transform` function. This is just a
 convenience wrapper to the `tf2_ros.lookup_transform` function and is used in
 the same manner.
+
+For the `Robot` node to be completely setup it is required to run
+`robot.setup()`. This will load the `triggers`, and `sensors` and will setup
+the subscriptions for those items.
 
 ### Sensor Configuration
 
@@ -57,9 +57,10 @@ sensors:
 
 ### Trigger Configuration<a name="trigger-configuration"/>
 
-Similarly to the sensor configuration the robot node can have triggers configured
-via passing a yaml the `triggers` parameter. The triggers should contain the name
-of the service and the service topic that the trigger service is listening on.
+Similarly to the sensor configuration the robot node can have triggers
+configured via passing a yaml the `triggers` parameter. The triggers should
+contain the name of the service and the service topic that the trigger service
+is listening on.
 
 #### Example
 
@@ -89,7 +90,9 @@ from behavior_tree.data import Blackboards
 
 blackboard = Blackboards()
 blackboard.set("state", key="state", value=State())
-blackboard.set("state", key="robot", value=Robot())
+robot = Robot()
+robot.setup()  # required for sensor and trigger setup
+blackboard.set("state", key="robot", value=robot)
 blackboard.set("perception", key="objects", value=None)
 blackboard.set("movement", key="waypoints", value=None)
 ```
@@ -100,8 +103,17 @@ the blackboard like "waypoints" or "objects" if you attempt to access them
 before they have been set you will receive a `KeyError`, so be aware of this
 when accessing variables.
 
-Additionally, be aware that the Robot node only needs to be created once and
-should be done when creating the tree.
+Additionally, be aware that the `Robot` node only needs to be created once and
+should be done when creating the tree. Ideally, one would create the tree and
+then add the `Robot` node to the tree in the following way:
+
+```
+  tree = py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
+  tree.setup(node=robot, timeout=15.0)
+```
+
+This will set the `Robot` node as the `py_trees_ros` node. Thus only one ros
+node will exist in the tree unless another is created.
 
 ## Decorators
 
@@ -122,15 +134,14 @@ should be done when creating the tree.
 
 ## Behaviors
 
-- `ContinueCancel` ([`py_trees.behaviour.Behaviour`]): This behavior waits
-  for a key press from the user, it will continue to return
-  `py_trees.common.Status.RUNNING` until the `continue_key` or
-  `cancel_key` is pressed, at which point it will return
-  `py_trees.common.Status.SUCCESS` or `py_trees.common.Status.FAILURE`,
-  respectively.
+- `ContinueCancel` ([`py_trees.behaviour.Behaviour`]): This behavior waits for
+  a key press from the user, it will continue to return
+`py_trees.common.Status.RUNNING` until the `continue_key` or `cancel_key` is
+  pressed, at which point it will return `py_trees.common.Status.SUCCESS` or
+  `py_trees.common.Status.FAILURE`, respectively.
 - `EmitFromFile` (`py_trees.behaviour.Behaviour`): A behavior that sets a
-  blackboard variable given data from a file. Each time the behavior is ticked
-  it will read another line from a file and set a blackboard variable. If all
+  blackboard variable given data from a file. Each time the behavior is ticked it
+  will read another line from a file and set a blackboard variable. If all
   messages have been published it will continue from the beginning of the file.
 - `SaveImage` ([`py_python.behavior.Behaviour`]): Save the current image for
   "camera" to `perception` blackboard.
@@ -140,33 +151,26 @@ should be done when creating the tree.
   cloud for "camera" to `perception` blackboard.
 - `Trigger` ([`py_trees.behaviour.Behaviour`]`]): Send a trigger for the given
   trigger name. (see [triggers](#trigger-configuration) for details)
-- `TransformToBlackboard` ([`py_python.behavior.Behaviour`]): Save the requested
-  transformation to the blackboard.
+- `TransformToBlackboard` ([`py_python.behavior.Behaviour`]): Save the
+  requested transformation to the blackboard.
 
 ### Action Behaviors
 
 - `ActionClient` ([`py_trees.behaviour.Behaviour`]): This is an abstract action
   client class that sets up most of the steps that are necessary for an
   ActionClient. This requires that any derived class create `get_goal`
-  `validate_result` functions, which creates the specific goal needed for
-  the desired action and validates/processes the action result, respectively.
-  The `get_goal` method should return the goal request for the action while
+  `validate_result` functions, which creates the specific goal needed for the
+  desired action and validates/processes the action result, respectively. The
+  `get_goal` method should return the goal request for the action while
   `validate_result` should return a `tuple[bool, str]` contains the result and
   the feedback string.
-- `DetectIDs` ([`behavior_tree.behaviors.ActionClient`]): An action client that
-  requests object id detections from the `ToolIDDetector` action server and
-  then updates the `perception.objects` blackboard variable. It matches the
-  detected id to the closest object using the pixel location.
-- `DetectObjects` ([`behavior_tree.ActionClient`]): An action client
-  that requests object detections from the `ObjectDetection` action server and
-  then saves them to the `perception.objects` blackboard variable.
-- `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion
-  along the given waypoints.
-- `PlanJointMotion` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan
-  robot movement to a joint configuration by providing a `link_name` and
-  `target_pose_key`.
-- `PlanToNamedTarget` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan
-  robot movement to a joint_configuration predefined by name.
+- `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion along
+ the given waypoints.
+- `PlanJointMotion` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan robot
+ movement to a joint configuration by providing a `link_name` and
+ `target_pose_key`.
+- `PlanToNamedTarget` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan robot
+ movement to a joint_configuration predefined by name.
 
 ### Service Behaviors
 
@@ -179,13 +183,6 @@ should be done when creating the tree.
   valid or not.
 - `PlanCartesian` ([`behavior_tree.ServiceClient`]): Plan robot
   movement along the given waypoints.
-- `SetABBIOSignal` ([`behavior_tree.ServiceClient`]): This behavior
-  triggers an IO signal by calling a specified ABB ROS 2 service (default is
-  `/rws_client/set_io_signal`). It supports setting the IO signal to either
-  high or low based on the trigger_on parameter. The behavior validates the
-  response to determine if the service call was successful, and updates its
-  status accordingly. This behavior is useful for controlling external devices
-  connected to the ABB like pneumatic cylinders via ROS 2 services.
 
 ### Pick & Place pipeline
 
@@ -212,7 +209,7 @@ We distinguish three different types of motion requests:
 _____
 It is necessary to create a specific __gripper_behavior__ depending on its type
 (fingers, suction, magnetic...) and how it is connected to the robot system.
-One example to be used in Thermoplast is `SetABBIOSignal` which can
+One example used in Thermoplast is `SetABBIOSignal` which can
 activate/deactivate the signal of the magnetic gripper.
 ____
 The _pick & place pipeline_ can then be composed of the different motion
@@ -347,13 +344,15 @@ with subtree
 ### Launch the Behavior Tree:
 
 ```bash
-ros2 launch behavior_tree thermoplast.launch.py
+ros2 launch behavior_tree example_tree.launch.py
 ```
 
 ### Render a Tree
 
+To be able to render tree, open a terminal and run the following:
+
 ```shell
-    py-trees-render -b behavior_tree.behavior_tree.thermoplast_tree
+    py-trees-render behavior_tree.tree.view_tree -b -v --kwargs='{"xml_file": "/path/to/tree_file.xml"}'
 ```
 
 ### Viewing the Behavior Tree
@@ -383,7 +382,7 @@ blackboard. To see more details run `py-trees-tree-watcher --help`.
 
 ### Launch Parameters
 
-The following launch parameters apply to `thermoplast.launch.py`
+The following launch parameters apply to `behavior_tree.launch.py`
 
 | Parameter Name               | Description                                      | Default Value                         |
 | :---                         | :---                                             | :---                                  |
@@ -401,9 +400,7 @@ The following launch parameters apply to `thermoplast.launch.py`
 ## Relevant Links
 
 <!-- links -->
-[py_trees_ros.subscribers.ToBlackboard]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.ToBlackboard
-[py_trees_ros.actions.ActionClient]: https://py-trees-ros.readthedocs.io/en/devel/modules.html#module-py_trees_ros.action_clients
-[behavior_tree.behaviors.ServiceClient]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/behavior_tree/-/blob/humble/behavior_tree/behaviors/service_client.py
-[capture_image]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/SaveImage.action?ref_type=heads
-[damage_inspection]: https://gitlab.tudelft.nl/samxl/projects/22ind01-rdm-thermoplast/damage_inspection/-/blob/ORTHO-161/Change_damage_inspection_service_to_an_action_server/damage_inspection_msgs/action/DetectDamage.action?ref_type=heads
-[py_trees.timers.Timer]: https://py-trees.readthedocs.io/en/release-2.2.x/modules.html#py_trees.timers.Timer
+[py_trees]: https://github.com/splintered-reality/py_trees
+[py_trees_ros]: https://github.com/splintered-reality/py_trees_ros
+[py_trees_ros_viewer]: https://github.com/splintered-reality/py_trees_ros_viewer
+[py_trees_ros_tutorials]: https://github.com/splintered-reality/py_trees_ros_tutorials

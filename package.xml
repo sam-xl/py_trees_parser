@@ -7,16 +7,15 @@
   <maintainer email="e.l.f.foster@tudelft.nl">Erich L Foster</maintainer>
   <license>Proprietary</license>
 
-  <exec_depend>abb_robot_msgs</exec_depend>
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
   <exec_depend>control_msgs</exec_depend>
-  <exec_depend>damage_inspection_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>moveit_msgs</exec_depend>
-  <exec_depend>object_segmentation_msgs</exec_depend>
   <exec_depend>python3-pandas</exec_depend>
+  <exec_depend>py_trees</exec_depend>
   <exec_depend>py_trees_ros</exec_depend>
+  <exec_depend>py_trees_ros_interfaces</exec_depend>
   <exec_depend>py_trees_ros_viewer</exec_depend>
   <exec_depend>pynput-pip</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
@@ -30,8 +29,6 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>simple_motion_msgs</exec_depend>
   <exec_depend>std_srvs</exec_depend>
-  <exec_depend>tool_id_detection</exec_depend>
-  <exec_depend>tool_id_detection_msgs</exec_depend>
   <exec_depend>tf_transformations</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
