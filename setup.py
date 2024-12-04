@@ -32,7 +32,7 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "behavior_tree = behavior_tree.behavior_tree:main",
+            "behavior_tree = behavior_tree.tree:main",
         ],
     },
 )
