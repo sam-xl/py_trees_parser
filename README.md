@@ -381,7 +381,7 @@ blackboard. To see more details run `py-trees-tree-watcher --help`.
 
 ### Launch Parameters
 
-The following launch parameters apply to `thermoplast.launch.py`
+The following launch parameters apply to `behavior_tree.launch.py`
 
 | Parameter Name               | Description                                      | Default Value                         |
 | :---                         | :---                                             | :---                                  |
