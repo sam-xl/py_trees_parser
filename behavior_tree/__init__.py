@@ -5,7 +5,7 @@ from behavior_tree.parser import BTParser
 from behavior_tree.robot import Robot
 
 from .action_client import ActionClient
-from .bt import create_tree, setup_blackboard, setup_tree  # noqa
+from .behavior_tree import create_tree, setup_blackboard, setup_tree, view_tree  # noqa
 from .service_client import ServiceClient
 
 __all__ = (
@@ -18,4 +18,5 @@ __all__ = (
     "create_tree",
     "setup_blackboard",
     "setup_tree",
+    "view_tree",
 )

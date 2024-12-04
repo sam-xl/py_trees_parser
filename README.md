@@ -351,7 +351,7 @@ ros2 launch behavior_tree example_tree.launch.py
 To be able to render tree, open a terminal and run the following:
 
 ```shell
-    py-trees-render behavior_tree.bt.view_tree -b -v --kwargs='{"xml_file": "/path/to/tree_file.xml"}'
+    py-trees-render behavior_tree.behavior_tree.view_tree -b -v --kwargs='{"xml_file": "/path/to/tree_file.xml"}'
 ```
 
 ### Viewing the Behavior Tree
