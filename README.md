@@ -139,7 +139,7 @@ node will exist in the tree unless another is created.
 `py_trees.common.Status.RUNNING` until the `continue_key` or `cancel_key` is
   pressed, at which point it will return `py_trees.common.Status.SUCCESS` or
   `py_trees.common.Status.FAILURE`, respectively.
-- `EmitFromFile` (`py_trees.behaviour.Behaviour`): A behavior that sets a
+- `EmitFromYaml` (`py_trees.behaviour.Behaviour`): A behavior that sets a
   blackboard variable given data from a file. Each time the behavior is ticked it
   will read another line from a file and set a blackboard variable. If all
   messages have been published it will continue from the beginning of the file.
