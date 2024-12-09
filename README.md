@@ -165,7 +165,7 @@ node will exist in the tree unless another is created.
   `validate_result` should return a `tuple[bool, str]` contains the result and
   the feedback string.
 - `Move` ([`behavior_tree.behaviors.ActionClient`]): Execute robot motion along
- the given waypoints.
+ the given trajectory.
 - `PlanJointMotion` ([`behavior_tree.PlanJoinSpaceMotion`]): Plan robot
  movement to a joint configuration by providing a `link_name` and
  `target_pose_key`.
