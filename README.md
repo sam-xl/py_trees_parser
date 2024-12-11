@@ -7,6 +7,9 @@ perception and for simple motion planning and executing.
 
 - ElementTree
 - geometry_msgs
+- moveit2
+- numpy
+- opencv2
 - python-pcl
 - ros-humble
 - ros-humble-py-trees
@@ -15,6 +18,18 @@ perception and for simple motion planning and executing.
 - ros2_numpy
 - sensor_msgs
 - std_srvs
+- tf2
+
+To install dependencies you can run the following commands:
+
+```shell
+vcs import src < src/behavior_tree/dependencies.repos
+rosdep update
+rosdep -q install --from-paths src/ --ignore-src -y --rosdistro "${ROS_DISTRO}"
+```
+
+where `ROS_DISTRO` is an environment variable containing the ros2 distribution
+name.
 
 ## Robot Node
 
@@ -29,9 +44,11 @@ from the robot node via the `Robot.lookup_transform` function. This is just a
 convenience wrapper to the `tf2_ros.lookup_transform` function and is used in
 the same manner.
 
-For the `Robot` node to be completely setup it is required to run
+For the `Robot` node to be completelTy setup it is required to run
 `robot.setup()`. This will load the `triggers`, and `sensors` and will setup
-the subscriptions for those items.
+the subscriptions for those items. The `triggers` and `sensors` are configured
+via a sensor and trigger file. These configuration files are expected to be
+passed to the `Robot` node as an absolute path.
 
 ### Sensor Configuration
 
@@ -60,7 +77,7 @@ sensors:
 Similarly to the sensor configuration the robot node can have triggers
 configured via passing a yaml the `triggers` parameter. The triggers should
 contain the name of the service and the service topic that the trigger service
-is listening on.
+is listening on. These triggers can be triggered via the `Trigger` behavior.
 
 #### Example
 
@@ -223,9 +240,12 @@ The Behavior Tree Parser (`BTParse`) is a Python module that allows you to
 parse an XML file representing a behavior tree and construct the corresponding
 behavior tree using the PyTrees library. It supports composite nodes, behavior
 nodes from PyTrees, and custom behavior nodes defined in your local library.
+The tree file can be passed to the `Robot` node via the parameter `tree_file`.
+The location of the tree file should be included as an absolute path, so that
+the parser can find that file.
 
-For any parameter that are code the code must be surrounded by `$()`. This
-allows the parser know that the following parameter value is in fact code
+For any parameter that is python code, the code must be surrounded by `$()`.
+This allows the parser know that the following parameter value is in fact code
 and should be evaluated as code.
 
 Idioms are also now supported. An idiom is a special function that produces
@@ -273,6 +293,41 @@ xml_file = "behavior_tree.xml"
 parser = BTParse(xml_file, logger)
 behavior_tree = parser.parse()
 ```
+
+### Using Your Own Behaviors
+
+The xml parser can use any behavior, whether it is part of `py_trees`, `py_trees_ros`,
+`behavior_tree`, or your own python module. The way the parser knows the existance of
+the behavior is via the behavior tag in the xml. The behavior tag should be the fully
+qualified python path of the behavior, so if you have the following structure of your
+python module
+
+```
+my_behavior_tree
+├── my_behavior_tree
+│   ├── __init__.py
+│   ├── behaviors
+│   │   ├── __init__.py
+│   │   └── my_behavior.py
+├── package.xml
+├── resource
+│   └── my_behavior_tree
+├── setup.cfg
+├── setup.py
+└── trees
+    ├── my_tree.xml
+    ├── subtree2.xml
+    └── subtree3.xml
+```
+
+then you would include the behaviors in `my_behavior.py` in the following way:
+
+```xml
+<my_bhavior_tree.behaviors.my_behavior.MyBehavior name="MyFancyBehavior">
+```
+
+The path to this can be shortened by including the class in `__init__.py`.
+
 
 ### Sub-Trees
 

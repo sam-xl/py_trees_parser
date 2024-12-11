@@ -12,6 +12,7 @@
   <exec_depend>control_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>moveit_msgs</exec_depend>
+  <exec_depend>opencv2</exec_depend>
   <exec_depend>python3-pandas</exec_depend>
   <exec_depend>py_trees</exec_depend>
   <exec_depend>py_trees_ros</exec_depend>
@@ -19,6 +20,7 @@
   <exec_depend>py_trees_ros_viewer</exec_depend>
   <exec_depend>pynput-pip</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
   <exec_depend>python3-pandas</exec_depend>
   <exec_depend>python3-pynput</exec_depend>
   <exec_depend>python3-setuptools</exec_depend>
@@ -31,7 +33,6 @@
   <exec_depend>std_srvs</exec_depend>
   <exec_depend>tf_transformations</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
-  <exec_depend>python3-yaml</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
