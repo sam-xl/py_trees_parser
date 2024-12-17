@@ -386,7 +386,7 @@ The following launch parameters apply to `behavior_tree.launch.py`
 
 | Parameter Name               | Description                                      | Default Value                         |
 | :---                         | :---                                             | :---                                  |
-| config_file                  | Configuration containing configuration of node   | "thermoplast.yml"                     |
+| config_file                  | Configuration containing configuration of node   | "continue_cancel.yml"                     |
 | webcam_image_topic           | Topic to listen to for webcam image messages     | "/camera/webcam/color/image"          |
 | webcam_info_topic            | Topic to listen to for webcam camera info        | "/camera/webcam/color/camera_info"    |
 | realsense_image_topic        | Topic to listen to for realsense image messages  | "/camera/realsense/color/image"       |
