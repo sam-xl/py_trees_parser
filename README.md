@@ -377,6 +377,8 @@ and we then include `subtree3.xml` in `subtree1.xml` the location of
 </subtree>
 ```
 
+#### Arguments
+
 It is also possible to use arguments for subtrees. The syntax of which looks like
 
 ```xml
@@ -394,13 +396,68 @@ with subtree
 </py_trees.composites.Sequence>
 ```
 
+Furthermore, one can cascade arguments down subtrees using the following syntax:
+
+```xml
+<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+    <arg name="foo" value="bar" />
+    <xi:include href="subtree/subtree1xml" parse="xml" />
+</subtree>
+```
+
+with subtree
+
+```xml
+<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+    <arg name="baz" value=${foo}
+    <xi:include href="subtree/subtree2.xml" parse="xml" />
+</subtree>
+```
+
+and finally
+
+```xml
+<py_trees.composites.Sequence name="Cascading Arg Tutorial">
+    <py_trees.behaviors.Success name="${baz}" />
+</py_trees.composites.Sequence>
+```
+
 ## Running the Behavior Tree
 
 ### Launch the Behavior Tree:
 
-```bash
-ros2 launch behavior_tree example_tree.launch.py
-```
+To easily create a launch file the class `BehaviorTreeLaunch` was created. This
+class provides some convenience methods for setting up a behavior tree launch
+file. The CTOR for the `BehaviorTreeLaunch` class takes the following
+parameters
+
+- `package` (`str`, optional): The package name for the ROS node. Defaults to "behavior_tree".
+- `executable` (`str`, optional): The executable for the ROS node. Defaults to "behavior_tree".
+- `name` (`str`, optional): The name for the ROS node. Defaults to "behavior_tree".
+
+And the provided methods are as follows:
+
+- `add_arg`: Add a new launch argument to the launch description.
+  + `name`: Name of the argument.
+  + `default_value`: Default value for the argument.
+  + `description`: Description of the argument.
+  + `kwargs`: Additional keyword arguments for the DeclareLaunchArgument action.
+- `add_tree_file`: Set the path to the behavior tree XML file.
+  + `tree_file`: Path to the behavior tree XML file.
++ `add_config`: Add a new launch argument for the config file.
+  + `config`: Path to the config file.
+- `add_parameter`: Add a new launch parameter.
+  + `name`: Name of the parameter.
+  + `value`: Value of the parameter.
+- `set_log_level`: Set the log level for the ROS node.
+  + `log_level`: The log level for the ROS node.
+    Possible values are "debug", "error", "fatal", "info", or "warn"
+- `add_remapping`: Add a new topic remappings to the launch description.
+  + `source`: The source topic.
+  + `destination`: The destination topic.
+- `get_launch_description`: Return the launch description.
+
+A simple example can be found in `behavior_tree.launch.py`
 
 ### Render a Tree
 
