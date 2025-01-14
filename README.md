@@ -44,7 +44,7 @@ from the robot node via the `Robot.lookup_transform` function. This is just a
 convenience wrapper to the `tf2_ros.lookup_transform` function and is used in
 the same manner.
 
-For the `Robot` node to be completelTy setup it is required to run
+For the `Robot` node to be completely setup it is required to run
 `robot.setup()`. This will load the `triggers`, and `sensors` and will setup
 the subscriptions for those items. The `triggers` and `sensors` are configured
 via a sensor and trigger file. These configuration files are expected to be
@@ -401,11 +401,11 @@ Furthermore, one can cascade arguments down subtrees using the following syntax:
 ```xml
 <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
     <arg name="foo" value="bar" />
-    <xi:include href="subtree/subtree1xml" parse="xml" />
+    <xi:include href="subtree/subtree1.xml" parse="xml" />
 </subtree>
 ```
 
-with subtree
+with subtree1
 
 ```xml
 <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -414,7 +414,7 @@ with subtree
 </subtree>
 ```
 
-and finally
+and finally, subtree2
 
 ```xml
 <py_trees.composites.Sequence name="Cascading Arg Tutorial">
