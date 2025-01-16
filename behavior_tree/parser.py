@@ -352,7 +352,7 @@ class BTParser:
 
         return node
 
-    def _sub_args(self, xml_node: ElementTree, args: dict) -> None:
+    def _process_args(self, xml_node: ElementTree, args: dict) -> None:
         """
         Substitute arguments in the subtree.
 
@@ -363,13 +363,21 @@ class BTParser:
 
         """
         for attr_name, attr_value in list(xml_node.attrib.items()):
-            if is_arg(attr_value):
-                var_name = attr_value[2:-1]
-                if var_name in args:
-                    self.logger.debug(f"Substituting {attr_value} with {args[var_name]}")
-                    xml_node.set(attr_name, args[var_name])
-                else:
-                    self.logger.warning(f"No match for {var_name} in subtree")
+            arg_value = self._sub_args(args, attr_value)
+            if arg_value is not None:
+                self.logger.debug(f"Substituting {attr_value} with {arg_value}")
+                xml_node.set(attr_name, arg_value)
+
+    def _sub_args(self, args, var):
+        if is_arg(var):
+            var_name = var[2:-1]
+            if var_name in args:
+                return args[var_name]
+            else:
+                self.logger.error(f"Argument '{var_name}' not found in arg list: {args}")
+                raise ValueError(f"Argument '{var_name}' not found in arg list")
+
+        return None
 
     def _build_tree(self, xml_node: ElementTree, args: dict = {}) -> py_trees.behaviour.Behaviour:
         """
@@ -390,25 +398,29 @@ class BTParser:
             return None
 
         if xml_node.tag.lower() == "subtree":
-            self.logger.debug(f"Found subtree: {xml_node}")
-            args = {}
+            self.logger.debug(f"Found subtree: {xml_node.attrib.get('name')}")
+            new_args = {}
             for child_xml in xml_node:
                 if child_xml.tag.lower() == "arg":  # create argument dict
                     name = child_xml.attrib.get("name")
-                    value = child_xml.attrib.get("value")
-                    args[name] = value
-                    self.logger.debug(f"Found arg: {name} = {value}")
+                    if (value := self._sub_args(args, child_xml.attrib.get("value"))) is not None:
+                        new_args[name] = value
+                    else:
+                        new_args[name] = child_xml.attrib.get("value")
+
+                    self.logger.debug(f"Found arg: {name} = {new_args[name]}")
                 else:  # no more args so parse subtree
                     self.logger.debug(
                         f"Parsing subtree starting with tag: {child_xml.tag.lower()}"
                     )
-                    self._sub_args(child_xml, args)
+                    self._process_args(child_xml, new_args)
+                    args.update(new_args)
                     return self._build_tree(child_xml, args)
 
         # we only need to find children if the node is a composite
         children = list()
         for child_xml in xml_node:
-            self._sub_args(child_xml, args)
+            self._process_args(child_xml, args)
             child = self._build_tree(child_xml)
             children.append(child)
 

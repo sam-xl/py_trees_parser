@@ -7,6 +7,9 @@ perception and for simple motion planning and executing.
 
 - ElementTree
 - geometry_msgs
+- moveit2
+- numpy
+- opencv2
 - python-pcl
 - ros-humble
 - ros-humble-py-trees
@@ -15,6 +18,18 @@ perception and for simple motion planning and executing.
 - ros2_numpy
 - sensor_msgs
 - std_srvs
+- tf2
+
+To install dependencies you can run the following commands:
+
+```shell
+vcs import src < src/behavior_tree/dependencies.repos
+rosdep update
+rosdep -q install --from-paths src/ --ignore-src -y --rosdistro "${ROS_DISTRO}"
+```
+
+where `ROS_DISTRO` is an environment variable containing the ros2 distribution
+name.
 
 ## Robot Node
 
@@ -31,7 +46,9 @@ the same manner.
 
 For the `Robot` node to be completely setup it is required to run
 `robot.setup()`. This will load the `triggers`, and `sensors` and will setup
-the subscriptions for those items.
+the subscriptions for those items. The `triggers` and `sensors` are configured
+via a sensor and trigger file. These configuration files are expected to be
+passed to the `Robot` node as an absolute path.
 
 ### Sensor Configuration
 
@@ -60,7 +77,7 @@ sensors:
 Similarly to the sensor configuration the robot node can have triggers
 configured via passing a yaml the `triggers` parameter. The triggers should
 contain the name of the service and the service topic that the trigger service
-is listening on.
+is listening on. These triggers can be triggered via the `Trigger` behavior.
 
 #### Example
 
@@ -223,9 +240,12 @@ The Behavior Tree Parser (`BTParse`) is a Python module that allows you to
 parse an XML file representing a behavior tree and construct the corresponding
 behavior tree using the PyTrees library. It supports composite nodes, behavior
 nodes from PyTrees, and custom behavior nodes defined in your local library.
+The tree file can be passed to the `Robot` node via the parameter `tree_file`.
+The location of the tree file should be included as an absolute path, so that
+the parser can find that file.
 
-For any parameter that are code the code must be surrounded by `$()`. This
-allows the parser know that the following parameter value is in fact code
+For any parameter that is python code, the code must be surrounded by `$()`.
+This allows the parser know that the following parameter value is in fact code
 and should be evaluated as code.
 
 Idioms are also now supported. An idiom is a special function that produces
@@ -273,6 +293,41 @@ xml_file = "behavior_tree.xml"
 parser = BTParse(xml_file, logger)
 behavior_tree = parser.parse()
 ```
+
+### Using Your Own Behaviors
+
+The xml parser can use any behavior, whether it is part of `py_trees`, `py_trees_ros`,
+`behavior_tree`, or your own python module. The way the parser knows the existance of
+the behavior is via the behavior tag in the xml. The behavior tag should be the fully
+qualified python path of the behavior, so if you have the following structure of your
+python module
+
+```
+my_behavior_tree
+├── my_behavior_tree
+│   ├── __init__.py
+│   ├── behaviors
+│   │   ├── __init__.py
+│   │   └── my_behavior.py
+├── package.xml
+├── resource
+│   └── my_behavior_tree
+├── setup.cfg
+├── setup.py
+└── trees
+    ├── my_tree.xml
+    ├── subtree2.xml
+    └── subtree3.xml
+```
+
+then you would include the behaviors in `my_behavior.py` in the following way:
+
+```xml
+<my_bhavior_tree.behaviors.my_behavior.MyBehavior name="MyFancyBehavior">
+```
+
+The path to this can be shortened by including the class in `__init__.py`.
+
 
 ### Sub-Trees
 
@@ -322,6 +377,8 @@ and we then include `subtree3.xml` in `subtree1.xml` the location of
 </subtree>
 ```
 
+#### Arguments
+
 It is also possible to use arguments for subtrees. The syntax of which looks like
 
 ```xml
@@ -339,13 +396,68 @@ with subtree
 </py_trees.composites.Sequence>
 ```
 
+Furthermore, one can cascade arguments down subtrees using the following syntax:
+
+```xml
+<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+    <arg name="foo" value="bar" />
+    <xi:include href="subtree/subtree1.xml" parse="xml" />
+</subtree>
+```
+
+with subtree1
+
+```xml
+<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+    <arg name="baz" value=${foo}
+    <xi:include href="subtree/subtree2.xml" parse="xml" />
+</subtree>
+```
+
+and finally, subtree2
+
+```xml
+<py_trees.composites.Sequence name="Cascading Arg Tutorial">
+    <py_trees.behaviors.Success name="${baz}" />
+</py_trees.composites.Sequence>
+```
+
 ## Running the Behavior Tree
 
 ### Launch the Behavior Tree:
 
-```bash
-ros2 launch behavior_tree example_tree.launch.py
-```
+To easily create a launch file the class `BehaviorTreeLaunch` was created. This
+class provides some convenience methods for setting up a behavior tree launch
+file. The CTOR for the `BehaviorTreeLaunch` class takes the following
+parameters
+
+- `package` (`str`, optional): The package name for the ROS node. Defaults to "behavior_tree".
+- `executable` (`str`, optional): The executable for the ROS node. Defaults to "behavior_tree".
+- `name` (`str`, optional): The name for the ROS node. Defaults to "behavior_tree".
+
+And the provided methods are as follows:
+
+- `add_arg`: Add a new launch argument to the launch description.
+  + `name`: Name of the argument.
+  + `default_value`: Default value for the argument.
+  + `description`: Description of the argument.
+  + `kwargs`: Additional keyword arguments for the DeclareLaunchArgument action.
+- `add_tree_file`: Set the path to the behavior tree XML file.
+  + `tree_file`: Path to the behavior tree XML file.
++ `add_config`: Add a new launch argument for the config file.
+  + `config`: Path to the config file.
+- `add_parameter`: Add a new launch parameter.
+  + `name`: Name of the parameter.
+  + `value`: Value of the parameter.
+- `set_log_level`: Set the log level for the ROS node.
+  + `log_level`: The log level for the ROS node.
+    Possible values are "debug", "error", "fatal", "info", or "warn"
+- `add_remapping`: Add a new topic remappings to the launch description.
+  + `source`: The source topic.
+  + `destination`: The destination topic.
+- `get_launch_description`: Return the launch description.
+
+A simple example can be found in `behavior_tree.launch.py`
 
 ### Render a Tree
 
