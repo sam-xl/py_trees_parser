@@ -1,37 +1,17 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>behavior_tree</name>
+  <name>py_trees_parser</name>
   <version>0.6.0</version>
-  <description>Behavior tree implementation for SAM XL</description>
+  <description>A py_trees xml parser</description>
   <maintainer email="e.l.f.foster@tudelft.nl">Erich L Foster</maintainer>
-  <license>Proprietary</license>
+  <license>apache 2.0</license>
 
   <exec_depend>ament_index_python</exec_depend>
-  <exec_depend>cv_bridge</exec_depend>
-  <exec_depend>control_msgs</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>moveit_msgs</exec_depend>
-  <exec_depend>python3-pandas</exec_depend>
   <exec_depend>py_trees</exec_depend>
   <exec_depend>py_trees_ros</exec_depend>
-  <exec_depend>py_trees_ros_interfaces</exec_depend>
-  <exec_depend>py_trees_ros_viewer</exec_depend>
   <exec_depend>pynput-pip</exec_depend>
-  <exec_depend>python3-numpy</exec_depend>
-  <exec_depend>python3-opencv</exec_depend>
-  <exec_depend>python3-pandas</exec_depend>
-  <exec_depend>python3-pynput</exec_depend>
   <exec_depend>python3-setuptools</exec_depend>
-  <exec_depend>python3-yaml</exec_depend>
-  <exec_depend>rclpy</exec_depend>
-  <exec_depend>ros2_numpy</exec_depend>
-  <exec_depend>rosidl_runtime_py</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>simple_motion_msgs</exec_depend>
-  <exec_depend>std_srvs</exec_depend>
-  <exec_depend>tf_transformations</exec_depend>
-  <exec_depend>tf2_ros</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
