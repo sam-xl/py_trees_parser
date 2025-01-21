@@ -1,0 +1,12 @@
+name: "testing"
+on: pull_request
+jobs:
+  testing:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: ros-tooling/setup-ros@v0.7
+      - uses: ros-tooling/action-ros-ci@v0.3
+        with:
+          package-name: py_tree_parser
+          target-ros2-distro: humble
+          vcs-repo-file-url: https://raw.githubusercontent.com/sam-xl/py_trees_parser/refs/heads/ORTHO-277/create_bt_parser_repo/dependencies.repos
