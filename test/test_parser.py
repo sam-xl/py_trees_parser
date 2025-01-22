@@ -5,13 +5,35 @@ import py_trees_ros
 import pytest
 import rclpy
 from ament_index_python.packages import get_package_share_directory
-from conftest import log_test_execution
 
 from py_trees_parser.parser import BTParser
 
-SHARE_DIR = get_package_share_directory("behavior_tree")
+SHARE_DIR = get_package_share_directory("py_trees_parser")
 
 rclpy.logging.get_logger("BTParser").set_level(rclpy.logging.LoggingSeverity.DEBUG)
+
+
+@pytest.fixture(scope="module")
+def ros_init():
+    rclpy.init()
+    yield
+    rclpy.shutdown()
+
+
+@pytest.fixture
+def setup_parser(ros_init):
+    def _setup(tree_file):
+        xml = os.path.join(SHARE_DIR, tree_file)
+        parser = BTParser(xml, log_level=rclpy.logging.LoggingSeverity.DEBUG)
+        try:
+            root = parser.parse()
+            py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
+        except Exception as ex:
+            assert False, f"parse raised an exception {ex}"
+
+        return root
+
+    return _setup
 
 
 @pytest.mark.parametrize(
@@ -24,26 +46,13 @@ rclpy.logging.get_logger("BTParser").set_level(rclpy.logging.LoggingSeverity.DEB
         "test/data/test_subtree_main.xml",
     ],
 )
-@log_test_execution
-def test_tree_parser(ros_init, tree_file):
-    xml = os.path.join(SHARE_DIR, tree_file)
-    parser = BTParser(xml, log_level=rclpy.logging.LoggingSeverity.DEBUG)
-    try:
-        root = parser.parse()
-        py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
-    except Exception as ex:
-        assert False, f"parse raised an exception {ex}"
+def test_tree_parser(setup_parser, tree_file):
+    _ = setup_parser(tree_file)
 
 
-@log_test_execution
-def test_subtree_and_args(ros_init):
-    xml = os.path.join(SHARE_DIR, "test/data/test_args.xml")
-    parser = BTParser(xml, log_level=rclpy.logging.LoggingSeverity.DEBUG)
-    try:
-        root = parser.parse()
-        py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
-    except Exception as ex:
-        assert False, f"parse raised an exception {ex}"
+def test_subtree_and_args(setup_parser):
+    tree_file = "test/data/test_args.xml"
+    root = setup_parser(tree_file)
 
     assert root.name == "Subtree Selector"
     for child in root.children:
