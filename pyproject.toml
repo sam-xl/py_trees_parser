@@ -1,0 +1,10 @@
+[tool.ruff]
+line_length = 99
+[tool.black]
+line-length = 99
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 99
+[tool.pep257]
+ignore = "D100, D101, D102, D103, D104, D105, D106, D107, D203, D212, D404"
