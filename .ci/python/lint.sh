@@ -15,7 +15,7 @@
 
 set -ex
 
-pip install ruff==0.0.92
+pip install ruff==0.9.2
 
 # lint the code (replaces flake8, isort, etc.)
 ruff check .
