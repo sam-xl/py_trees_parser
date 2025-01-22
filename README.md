@@ -15,7 +15,7 @@ creating an xml file.
 To install dependencies you can run the following commands:
 
 ```shell
-vcs import src < src/behavior_tree/dependencies.repos
+vcs import src < src/py_trees_parser/dependencies.repos
 rosdep update
 rosdep -q install --from-paths src/ --ignore-src -y --rosdistro "${ROS_DISTRO}"
 ```
@@ -87,7 +87,7 @@ behavior_tree = parser.parse()
 ### Using Your Own Behaviors
 
 The xml parser can use any behavior, whether it is part of `py_trees`, `py_trees_ros`,
-`behavior_tree`, or your own python module. The way the parser knows the existance of
+or your own python module. The way the parser knows the existance of
 the behavior is via the behavior tag in the xml. The behavior tag should be the fully
 qualified python path of the behavior, so if you have the following structure of your
 python module
