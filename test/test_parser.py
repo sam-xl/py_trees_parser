@@ -7,7 +7,7 @@ import rclpy
 from ament_index_python.packages import get_package_share_directory
 from conftest import log_test_execution
 
-from behavior_tree.parser import BTParser
+from py_trees_parser.parser import BTParser
 
 SHARE_DIR = get_package_share_directory("behavior_tree")
 
