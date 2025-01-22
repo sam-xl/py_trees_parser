@@ -19,7 +19,8 @@ jobs:
       - name: Run python linting
         uses: chartboost/ruff-action@v1
         with:
-          args: --check .
+          config: pyproject.toml
+          changed-files: true
       - name: Run unit tests
         uses: ros-industrial/industrial_ci@master # run industrial_ci
         env: # either pass all entries explicitly

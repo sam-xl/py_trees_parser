@@ -1,10 +1,44 @@
 [tool.ruff]
-line_length = 99
-[tool.black]
 line-length = 99
-[tool.isort]
-atomic = true
-profile = "black"
-line_length = 99
-[tool.pep257]
-ignore = "D100, D101, D102, D103, D104, D105, D106, D107, D203, D212, D404"
+# industrial_ci gets cloned to the root of the repository in the ci/cd pipeline
+extend-exclude = [".industrial_ci"]
+
+[tool.ruff.lint]
+select = [
+    # pydocstyle: check for docstring conventions
+    "D",
+    # pycodestyle: check PEP 8 code style conventions
+    "E",
+    # pyflakes: check for various errors (e.g. unused imports or variables)
+    "F",
+    # pyupgrade: check for old syntax in newer python versions
+    "UP",
+    # flake8-bugbear: check for bugs and design problems (e.g. using mutalble data structures as defaults)
+    "B",
+    # flake8-simplify: check for basic code simplifications
+    "SIM",
+    # isort: import sorting
+    "I",
+]
+
+extend-select = [
+    # enable D213 on top of the Google convention
+    # more pretty than D212
+    "D213"
+]
+
+ignore = [
+    # disable "missing docstring in public package" error
+    # already done in setup.py
+    "D104",
+    # disable "multi-line docstring summary should start at the first line" error
+    # ugly! and using alternative (D213) instead
+    "D212",
+    # disable: "missing argument description in the docstring"
+    # overkill for simple functions with descriptive argument names
+    "D417"
+]
+
+[tool.ruff.lint.pydocstyle]
+# limit `pydocstyle` rules to those that adhere to the Google convention
+convention = "google"
