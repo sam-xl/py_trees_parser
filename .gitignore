@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ROS 2 specific
+build/
+install/
+log/
+*.so
+*.dSYM/
+*.swp
+*.swo
+
+# VS Code settings
+.vscode/
+*.code-workspace
+
+# Pytest
+.cache/
+*.cover
+*.coverage
+nosetests.xml
+coverage.xml
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment variables
+.env
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# MacOS
+.DS_Store
+
+# Linux
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.swp
+*.swo
+
+# IDE specific
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Other
+*.log
+*.out
+*.err
