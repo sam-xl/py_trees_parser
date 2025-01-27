@@ -15,6 +15,7 @@
 
 set -ex
 
+export PATH=$PATH:$HOME/.local/bin
 pip install ruff==0.9.2
 
 # lint the code (replaces flake8, isort, etc.)
