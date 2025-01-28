@@ -4,7 +4,5 @@
     <py_trees_ros.battery.ToBlackboard name="Battery2BB" topic_name="/battery/state"
       qos_profile="$(py_trees_ros.utilities.qos_profile_unlatched())" threshold="30.0" />
   </py_trees.composites.Sequence>
-  <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-    <xi:include href="test_subtree_sub.xml" parse="xml" />
-  </subtree>
+  <subtree name="subtree_sub" include="$(ament_index_python.get_package_share_directory('py_trees_parser') + '/test/data/test_subtree_sub.xml')" />
 </py_trees.composites.Parallel>

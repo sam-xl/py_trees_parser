@@ -1,4 +1,4 @@
-<py_trees.composites.Sequence name="Idioms" memory="False">
+<py_trees.composites.Sequence name="Idioms" memory="$(False)">
   <py_trees.idioms.oneshot name="OneShot"
     variable_name="one_shot"
     policy="$(py_trees.common.OneShotPolicy)">

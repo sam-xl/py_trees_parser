@@ -89,3 +89,19 @@ def test_subtree_and_args(setup_parser):
             assert child.period == 2
         else:
             assert False, f"Unexpected child node type {type(child)}"  # noqa
+
+
+def test_subtree_cascaded_args(setup_parser):
+    """Test that cascaded args through subtrees is working as expected."""
+    tree_file = "test/data/test_cascade_args.xml"
+    root = setup_parser(tree_file)
+
+    assert root.name == "Subtree Selector"
+    for child in root.children:
+        if isinstance(child, py_trees.behaviours.Running):
+            assert child.name == "Idle"
+        elif isinstance(child, py_trees.behaviours.Periodic):
+            assert child.name == "Flip Eggs"
+            assert child.period == 2
+        else:
+            assert False, f"Unexpected child node type {type(child)}"  # noqa
