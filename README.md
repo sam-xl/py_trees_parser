@@ -2,8 +2,8 @@
 
 This is a xml parser for processing and building a py_trees behavior tree. The
 hope is that most if not all capabilities of py_trees will be available for xml
-parsing. As such, a py_trees behavior tree will be able to be created by simply
-creating an xml file.
+parsing. As such, a py_trees behavior tree can be created by simply creating an
+xml file.
 
 ## Dependencies
 
@@ -30,9 +30,13 @@ parse an XML file representing a behavior tree and construct the corresponding
 behavior tree using the `py_trees` library. It supports composite nodes, behavior
 nodes from `py_trees`, and custom behavior nodes defined in your local library.
 
+### Python Interpreter
+
 For any parameter that is python code, the code must be surrounded by `$()`.
 This allows the parser know that the following parameter value is in fact code
 and should be evaluated as code.
+
+### Idioms
 
 Idioms are also now supported. An idiom is a special function that produces
 a behavior tree, the function is expected to either take no children, takes
@@ -40,6 +44,8 @@ a list of children via parameters "subtrees", or takes a single
 child via parameter "behavior". The xml parser will treat children in the
 same way that it treats children for all other behaviors. That is the
 children should be a subnode of the idiom node.
+
+### Subtrees
 
 Additionally, it is possible to create a subtree, where a subtree is an xml
 containing a complete behavior tree. This xml file can be included in other xml
@@ -87,7 +93,7 @@ behavior_tree = parser.parse()
 ### Using Your Own Behaviors
 
 The xml parser can use any behavior, whether it is part of `py_trees`, `py_trees_ros`,
-or your own python module. The way the parser knows the existance of
+or your own python module. The way the parser knows the existence of
 the behavior is via the behavior tag in the xml. The behavior tag should be the fully
 qualified python path of the behavior, so if you have the following structure of your
 python module
@@ -125,60 +131,36 @@ It is possible to include sub-trees in the xml file containing a behavior tree.
 This is made possible via the following:
 
 ```xml
-<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-    <xi:include href="location/of/subtree.xml" parse="xml" />
-</subtree>
+<subtree
+  name="my_subtree"
+  include="/location/of/subtree.xml" />
 ```
 
 The included subtree should be a complete tree, but can only contain one root.
 It is possible to include multiple sub-trees and a sub-tree can also include
-another subtree. However, be aware that the all directories are reltative to
-the main. For example, if we have four behavior tree files in a directory like
-so:
-
-```
-config
-├── main.xml
-└── subtree
-    ├── subtree1.xml
-    ├── subtree2.xml
-    └── subtree3.xml
-```
-
-and the following is our main.xml
+another subtree. However, be aware that the all directories are absolute, but it
+is possible to use python to determine the path like so:
 
 ```xml
 <py_trees.composites.Parallel name="Subtree Tutorial" synchronise="False">
-    <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-        <xi:include href="subtree/subtree1.xml" parse="xml" />
-    </subtree>
-    <subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-        <xi:include href="subtree/subtree2.xml" parse="xml" />
-    </subtree>
+    <subtree
+      name="my_subtree"
+      include="$(os.path.join(ament_index_python.packages.get_package_share_directory('my_package'), 'tree', 'subtree.xml'))" />
 </py_trees.composites.Parallel>
 ```
-
-and we then include `subtree3.xml` in `subtree1.xml` the location of
-`subtree3.xml` must still be relative to `main.xml`:
-
-```xml
-<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-    <xi:include href="subtree/subtree3.xml" parse="xml" />
-</subtree>
-```
-
 #### Arguments
 
 It is also possible to use arguments for subtrees. The syntax of which looks like
 
 ```xml
-<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+<subtree
+  name="my_subtree"
+  include="/location/of/subtree.xml" >
     <arg name="foo" value="bar" />
-    <xi:include href="subtree/subtree.xml" parse="xml" />
 </subtree>
 ```
 
-with subtree
+and then inside the subtree
 
 ```xml
 <py_trees.composites.Sequence name="Arg Tutorial">
@@ -189,22 +171,24 @@ with subtree
 Furthermore, one can cascade arguments down subtrees using the following syntax:
 
 ```xml
-<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
+<subtree
+  name="my_subtree1"
+  include="/location/of/subtree1.xml" >
     <arg name="foo" value="bar" />
-    <xi:include href="subtree/subtree1.xml" parse="xml" />
 </subtree>
 ```
 
-with subtree1
+and in subtree1
 
 ```xml
-<subtree xmlns:xi="http://www.w3.org/2001/XInclude">
-    <arg name="baz" value=${foo}
-    <xi:include href="subtree/subtree2.xml" parse="xml" />
+<subtree
+  name="my_subtree2"
+  include="/location/of/subtree2.xml" >
+  <arg name="baz" value=${foo}
 </subtree>
 ```
 
-and finally, subtree2
+and finally in subtree2
 
 ```xml
 <py_trees.composites.Sequence name="Cascading Arg Tutorial">
