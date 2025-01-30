@@ -81,6 +81,7 @@ def test_subtree_and_args(setup_parser):
     root = setup_parser(tree_file)
 
     assert root.name == "Subtree Selector"
+
     for child in root.children:
         if isinstance(child, py_trees.behaviours.Running):
             assert child.name == "Idle"
@@ -92,11 +93,12 @@ def test_subtree_and_args(setup_parser):
 
 
 def test_subtree_cascaded_args(setup_parser):
-    """Test that cascaded args through subtrees is working as expected."""
+    """Test that cascaded args through subtrees and nested subtrees is working as expected."""
     tree_file = "test/data/test_cascade_args.xml"
-    root = setup_parser(tree_file)
+    root = setup_parser(tree_file).children[0]
 
     assert root.name == "Subtree Selector"
+
     for child in root.children:
         if isinstance(child, py_trees.behaviours.Running):
             assert child.name == "Idle"
