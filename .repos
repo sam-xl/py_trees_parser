@@ -7,4 +7,4 @@ repositories:
   vendors/py_trees_ros:
     type: git
     url: https://github.com/splintered-reality/py_trees_ros.git
-    version: 1729e289a4d7783dfe3b633bf4d144f3526fce0c
+    version: 2.3.0
