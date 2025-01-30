@@ -417,7 +417,7 @@ class BTParser:
         Args:
         ----
             xml_node (Element): The XML node to build the tree from.
-            args (list[tuple[str, str]]): Arguments for substitutions in elements, default None.
+            args (dict[tuple[str, str]]): Arguments for substitutions in elements, default None.
 
         Returns:
         -------
