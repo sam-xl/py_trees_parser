@@ -30,5 +30,5 @@ Why is this change implemented? Add screenshots, images, or other media if this 
 This should contain instructions on how to test the new code, or details on how
 the new code was tested, e.g.
 
-1. `colcon build --symlink-install --merge-install --packages-up-to py_trees_parser`
-2. `colcon test --merge-install --event-handlers console_cohesion+ --packages-select py_trees_parser`
+1. `colcon build --packages-up-to py_trees_parser`
+2. `colcon test --event-handlers console_cohesion+ --packages-select py_trees_parser`
