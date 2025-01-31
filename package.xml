@@ -5,7 +5,7 @@
   <version>0.6.0</version>
   <description>A py_trees xml parser</description>
   <maintainer email="e.l.f.foster@tudelft.nl">Erich L Foster</maintainer>
-  <license>apache 2.0</license>
+  <license>Apache-2.0</license>
 
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>py_trees</exec_depend>

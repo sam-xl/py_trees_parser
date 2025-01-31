@@ -25,7 +25,7 @@ name.
 
 ## XML Parser
 
-The Behavior Tree Parser (`BTParse`) is a Python module that allows you to
+The Behavior Tree Parser (`BTParser`) is a Python class that allows you to
 parse an XML file representing a behavior tree and construct the corresponding
 behavior tree using the `py_trees` library. It supports composite nodes, behavior
 nodes from `py_trees`, and custom behavior nodes defined in your local library.

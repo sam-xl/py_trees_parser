@@ -1,4 +1,4 @@
-# Copyright 2025 SAM-XL
+# Copyright 2025 SAM XL
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -417,7 +417,7 @@ class BTParser:
         Args:
         ----
             xml_node (Element): The XML node to build the tree from.
-            args (dict[tuple[str, str]]): Arguments for substitutions in elements, default None.
+            args (dict[str, str]): Arguments for substitutions in elements, default None.
 
         Returns:
         -------

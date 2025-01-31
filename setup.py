@@ -1,4 +1,4 @@
-# Copyright 2025 SAM-XL
+# Copyright 2025 SAM XL
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ setup(
     maintainer="Erich L Foster",
     maintainer_email="e.l.f.foster@tudelft.nl",
     description="A py_trees xml parser",
-    license="apache 2.0",
+    license="Apache-2.0",
     tests_require=["pytest"],
     entry_points={},
 )
