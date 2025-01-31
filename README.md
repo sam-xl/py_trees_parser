@@ -30,11 +30,25 @@ parse an XML file representing a behavior tree and construct the corresponding
 behavior tree using the `py_trees` library. It supports composite nodes, behavior
 nodes from `py_trees`, and custom behavior nodes defined in your local library.
 
+### Examples
+
+For examples see `test/data/`.
+
 ### Python Interpreter
 
 For any parameter that is python code, the code must be surrounded by `$()`.
 This allows the parser know that the following parameter value is in fact code
-and should be evaluated as code.
+and should be evaluated as code. For a concrete example see below:
+
+```xml
+<py_trees_ros.battery.ToBlackboard name="Battery2BB"
+    topic_name="/battery/state"
+    qos_profile="$(py_trees_ros.utilities.qos_profile_unlatched())"
+    threshold="30.0" />
+```
+
+In the above example the `qos_profile` is evaluated as python code. Notice to
+use any python module you must use the fully qualified name.
 
 ### Idioms
 
@@ -47,7 +61,7 @@ children should be a subnode of the idiom node.
 
 ### Subtrees
 
-Additionally, it is possible to create a subtree, where a subtree is an xml
+Additionally, it is possible to create a [subtree](#sub-trees), where a subtree is an xml
 containing a complete behavior tree. This xml file can be included in other xml
 files and therefore allows for complete modularity of trees.
 
