@@ -1,6 +1,7 @@
-<subtree name="test_args" include="$(ament_index_python.get_package_share_directory('py_trees_parser') + '/test/data/test_subtree_args.xml')" >
+<subtree name="subtree_cascade" include="$(ament_index_python.get_package_share_directory('py_trees_parser') + '/test/data/test_subtree_cascade.xml')">
   <arg name="selector_name" value="Subtree Selector" />
   <arg name="idle_name" value="Idle" />
   <arg name="flip_name" value="Flip Eggs" />
   <arg name="n" value="2" />
 </subtree>
+

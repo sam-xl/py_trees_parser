@@ -1,0 +1,28 @@
+on: # this determines when this workflow is run
+  pull_request:
+  workflow_dispatch: # allow manually starting this workflow
+
+jobs:
+  industrial_ci:
+    name: ROS ${{ matrix.ROS_DISTRO }} (${{ matrix.ROS_REPO }})
+    runs-on: ubuntu-latest
+    strategy:
+      # fail-fast: false # uncomment if failing jobs should not cancel the others immediately
+      matrix: # matrix is the product of entries
+        ROS_DISTRO: [humble]
+        ROS_REPO: [main]
+    env:
+      UPSTREAM_WORKSPACE: .repos
+    steps:
+      - name: Checkout out Git repository
+        uses: actions/checkout@v4 # clone target repository
+      - name: Run python linting
+        uses: chartboost/ruff-action@v1
+        with:
+          config: pyproject.toml
+          changed-files: true
+      - name: Run unit tests
+        uses: ros-industrial/industrial_ci@master # run industrial_ci
+        env: # either pass all entries explicitly
+          ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
+          ROS_REPO: ${{ matrix.ROS_REPO }}

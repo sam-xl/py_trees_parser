@@ -1,4 +1,5 @@
-# Copyright 2017 Open Source Robotics Foundation, Inc.
+#!/usr/bin/env bash
+# Copyright 2025 SAM XL
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-from ament_flake8.main import main_with_errors
+set -ex
 
+export PATH=$PATH:$HOME/.local/bin
+pip install ruff==0.9.2
 
-@pytest.mark.flake8
-@pytest.mark.linter
-def test_flake8():
-    rc, errors = main_with_errors(argv=[])
-    assert rc == 0, "Found %d code style errors / warnings:\n" % len(errors) + "\n".join(errors)
+# lint the code (replaces flake8, isort, etc.)
+ruff check .
+
+# check if formatting is correct (~ equivalent of `black format --check`)
+ruff format --check .
+
