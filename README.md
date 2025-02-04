@@ -1,9 +1,11 @@
 # py_trees Parser
 
-This is a xml parser for processing and building a py_trees behavior tree. The
-hope is that most if not all capabilities of py_trees will be available for xml
-parsing. As such, a py_trees behavior tree can be created by simply creating an
-xml file.
+This is a xml parser for processing and building a
+[py_trees](https://github.com/splintered-reality/py_trees) behavior tree. The
+hope is that most if not all capabilities of py_trees and
+[py_trees_ros](https://github.com/splintered-reality/py_trees_ros) will be
+available for xml parsing. As such, a py_trees behavior tree can be created by
+simply creating an xml file.
 
 ## Dependencies
 
