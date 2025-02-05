@@ -1,6 +1,6 @@
 # py_trees Parser
 
-This is a xml parser for processing and building a
+This is an xml parser for processing and building a
 [py_trees](https://github.com/splintered-reality/py_trees) behavior tree. The
 hope is that most if not all capabilities of py_trees and
 [py_trees_ros](https://github.com/splintered-reality/py_trees_ros) will be
