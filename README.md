@@ -52,6 +52,10 @@ and should be evaluated as code. For a concrete example see below:
 In the above example the `qos_profile` is evaluated as python code. Notice to
 use any python module you must use the fully qualified name.
 
+note: Boolean values should be considered python as checking the truth of a
+python string will always be evaluated as `True`, e.g. `if "False":` will evaluate
+to `True`.
+
 ### Idioms
 
 Idioms are also now supported. An idiom is a special function that produces
@@ -75,14 +79,14 @@ Create an XML file that represents your behavior tree. The XML structure should
 define the nodes and their attributes. It should be similar to the following:
 
 ```xml
-<py_trees.composites.Parallel name="TutorialOne" synchronise="False">
-    <py_trees.composites.Sequence name="Topics2BB" memory="False">
+<py_trees.composites.Parallel name="TutorialOne" synchronise="$(False)">
+    <py_trees.composites.Sequence name="Topics2BB" memory="$(False)">
         <py_trees_ros.battery.ToBlackboard name="Battery2BB"
             topic_name="/battery/state"
             qos_profile="$(py_trees_ros.utilities.qos_profile_unlatched())"
             threshold="30.0" />
     </py_trees.composites.Sequence>
-    <py_trees.composites.Selector name="Tasks" memory="False">
+    <py_trees.composites.Selector name="Tasks" memory="$(False)">
         <py_trees.behaviours.Running name="Idle" />
         <py_trees.behaviours.Periodic name="Flip Eggs" n="2" />
     </py_trees.composites.Selector>
@@ -158,7 +162,7 @@ another subtree. However, be aware that the all directories are absolute, but it
 is possible to use python to determine the path like so:
 
 ```xml
-<py_trees.composites.Parallel name="Subtree Tutorial" synchronise="False">
+<py_trees.composites.Parallel name="Subtree Tutorial" synchronise="$(False)">
     <subtree
       name="my_subtree"
       include="$(os.path.join(ament_index_python.packages.get_package_share_directory('my_package'), 'tree', 'subtree.xml'))" />
