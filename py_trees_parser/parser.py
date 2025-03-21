@@ -421,6 +421,41 @@ class BTParser:
 
         return None
 
+    def _evaluate_condition(self, condition: str, args: dict) -> bool:
+        """
+        Evaluate a conditional expression with the given arguments.
+
+        Args:
+        ----
+            condition (str): The condition to evaluate.
+            args (dict): The arguments to use in evaluation.
+
+        Returns:
+        -------
+            bool: The result of the condition evaluation.
+        """
+        self.logger.debug(f"Evaluating condition: {condition} with args: {args}")
+        
+        # Replace argument placeholders with their values
+        for arg_name, arg_value in args.items():
+            placeholder = "${" + arg_name + "}"
+            if placeholder in condition:
+                # For string arg values, ensure they're properly quoted in the condition
+                if isinstance(arg_value, str) and not arg_value.startswith('"') and not arg_value.startswith("'"):
+                    arg_value = f"'{arg_value}'"
+                condition = condition.replace(placeholder, str(arg_value))
+        
+        self.logger.debug(f"Condition after arg substitution: {condition}")
+        
+        try:
+            # Safely evaluate the condition
+            result = eval(condition, {"__builtins__": {}}, {})
+            self.logger.debug(f"Condition result: {result}")
+            return bool(result)
+        except Exception as ex:
+            self.logger.error(f"Error evaluating condition '{condition}': {ex}")
+            raise ValueError(f"Error evaluating condition '{condition}': {ex}")
+
     def _build_tree(
         self,
         xml_node: Element,
@@ -466,6 +501,41 @@ class BTParser:
                         f"Unexpected tag in subtree ({subtree_name}): {child_xml.tag.lower()}"
                     )
             return self._build_tree(self._get_xml(include), {**args, **new_args})
+        
+        # Handle conditional inclusion based on arguments
+        if xml_node.tag.lower() == "conditional":
+            condition = xml_node.attrib.get("if")
+            if not condition:
+                self.logger.error("Conditional tag missing 'if' attribute")
+                raise ValueError("Conditional tag missing 'if' attribute")
+            
+            # Process condition
+            self.logger.debug(f"Processing conditional: {condition}")
+            include_children = self._evaluate_condition(condition, args)
+            
+            if not include_children:
+                self.logger.debug("Condition evaluated to False, skipping children")
+                # Return a dummy composite node with no children
+                return py_trees.composites.Sequence(name="conditional_skipped")
+            
+            # Condition is true, include children
+            self.logger.debug("Condition evaluated to True, including children")
+            if len(list(xml_node)) == 0:
+                self.logger.warn("Conditional has no children")
+                return py_trees.composites.Sequence(name="empty_conditional")
+            elif len(list(xml_node)) == 1:
+                # If there's only one child, return it directly
+                child_xml = list(xml_node)[0]
+                self._process_args(child_xml, args)
+                return self._build_tree(child_xml, args)
+            else:
+                # If there are multiple children, wrap them in a sequence
+                children = list()
+                for child_xml in xml_node:
+                    self._process_args(child_xml, args)
+                    child = self._build_tree(child_xml, args)
+                    children.append(child)
+                return py_trees.composites.Sequence(name="conditional_sequence", children=children)
 
         # we only need to find children if the node is a composite
         children = list()
