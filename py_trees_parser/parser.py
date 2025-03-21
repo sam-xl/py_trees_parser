@@ -396,36 +396,38 @@ class BTParser:
                 xml_node.set(attr_name, arg_value)
 
     def _sub_args(self, args, var):
-        if is_arg(var):
-            var_name = var[2:-1]
-            if var_name in args:
-                return args[var_name]
-            else:
-                self.logger.error(f"Argument '{var_name}' not found in arg list: {args}")
-                raise ValueError(f"Argument '{var_name}' not found in arg list")
-
-        # Support for argument substitution within strings
-        elif isinstance(var, str) and "${" in var and "}" in var:
-            result = var
-            # Find all ${...} patterns in the string
-            start_idx = 0
-            while "${" in result[start_idx:]:
-                start = result.find("${", start_idx)
-                end = result.find("}", start + 2)
-                if end == -1:
-                    break
-                
-                arg_name = result[start+2:end]
-                if arg_name in args:
-                    # Replace the argument with its value
-                    result = result[:start] + args[arg_name] + result[end+1:]
-                    # Start searching from the position after the replacement
-                    start_idx = start + len(args[arg_name])
+        if isinstance(var, str) and "${" in var and "}" in var:
+            # Handle both full replacement and embedded arguments
+            if var.startswith("${") and var.endswith("}") and var.count("${") == 1:
+                # Case 1: Entire string is an argument (${arg})
+                var_name = var[2:-1]
+                if var_name in args:
+                    return args[var_name]
                 else:
-                    self.logger.error(f"Argument '{arg_name}' not found in arg list: {args}")
-                    raise ValueError(f"Argument '{arg_name}' not found in arg list")
+                    self.logger.error(f"Argument '{var_name}' not found in arg list: {args}")
+                    raise ValueError(f"Argument '{var_name}' not found in arg list")
+            else:
+                # Case 2: Arguments embedded within a string (prefix_${arg}_suffix)
+                result = var
+                # Find all ${...} patterns in the string
+                start_idx = 0
+                while "${" in result[start_idx:]:
+                    start = result.find("${", start_idx)
+                    end = result.find("}", start + 2)
+                    if end == -1:
+                        break
                     
-            return result
+                    arg_name = result[start+2:end]
+                    if arg_name in args:
+                        # Replace the argument with its value
+                        result = result[:start] + args[arg_name] + result[end+1:]
+                        # Start searching from the position after the replacement
+                        start_idx = start + len(args[arg_name])
+                    else:
+                        self.logger.error(f"Argument '{arg_name}' not found in arg list: {args}")
+                        raise ValueError(f"Argument '{arg_name}' not found in arg list")
+                        
+                return result
 
         return None
 
