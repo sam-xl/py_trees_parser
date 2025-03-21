@@ -121,7 +121,10 @@ def test_arg_substitution_within_strings(setup_parser):
         if isinstance(child, py_trees.behaviours.Running):
             assert child.name == "prefix_value1_suffix"
         elif isinstance(child, py_trees.behaviours.Success):
-            assert child.name == "task_value2_complete"
+            if "multiple" in child.name:
+                assert child.name == "multiple_value1_and_value2_args"
+            elif "task" in child.name:
+                assert child.name == "task_value2_complete"
         elif isinstance(child, py_trees.behaviours.Periodic):
             assert child.name == "periodic_value3"
             assert child.period == 3
