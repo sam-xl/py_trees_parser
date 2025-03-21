@@ -1,0 +1,6 @@
+<py_trees.composites.Selector name="Argument Substitution Test" memory="$(False)">
+  <py_trees.behaviours.Running name="prefix_${arg1}_suffix" />
+  <py_trees.behaviours.Success name="task_${arg2}_complete" />
+  <py_trees.behaviours.Periodic name="periodic_${arg3}" n="${n}" />
+  <py_trees.behaviours.Success name="multiple_${arg1}_and_${arg2}_args" />
+</py_trees.composites.Selector> 
