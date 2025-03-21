@@ -22,5 +22,4 @@ pip install ruff==0.9.2
 ruff check .
 
 # check if formatting is correct (~ equivalent of `black format --check`)
-ruff format --check .
-
+ruff format --diff .
