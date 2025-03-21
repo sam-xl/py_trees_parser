@@ -69,6 +69,7 @@ def setup_parser(ros_init):
         "test/data/test_function_parse.xml",
         "test/data/test_subtree_main.xml",
         "test/data/test_arg_substitution_main.xml",
+        "test/data/test_conditional_main.xml",
     ],
 )
 def test_tree_parser(setup_parser, tree_file):
