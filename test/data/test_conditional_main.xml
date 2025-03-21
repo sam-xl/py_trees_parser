@@ -1,0 +1,6 @@
+<subtree name="test_conditional" include="$(ament_index_python.get_package_share_directory('py_trees_parser') + '/test/data/test_conditional.xml')" >
+  <arg name="mode" value="advanced" />
+  <arg name="level" value="10" />
+  <arg name="enable_debug" value="True" />
+  <arg name="include_all" value="True" />
+</subtree> 

@@ -1,0 +1,31 @@
+<py_trees.composites.Selector name="Conditional Test" memory="$(False)">
+  <!-- Basic condition: equal comparison -->
+  <conditional if="${mode} == 'advanced'">
+    <py_trees.behaviours.Success name="Advanced Mode Feature" />
+  </conditional>
+  
+  <!-- Basic condition: not equal comparison -->
+  <conditional if="${mode} != 'basic'">
+    <py_trees.behaviours.Running name="Non-Basic Mode Feature" />
+  </conditional>
+  
+  <!-- Numeric comparison -->
+  <conditional if="${level} > 5">
+    <py_trees.behaviours.Periodic name="High Level Feature" n="3" />
+  </conditional>
+  
+  <!-- Boolean condition -->
+  <conditional if="${enable_debug} == True">
+    <py_trees.behaviours.Success name="Debug Feature" />
+  </conditional>
+  
+  <!-- Multiple children in a conditional -->
+  <conditional if="${include_all} == True">
+    <py_trees.behaviours.Success name="Feature 1" />
+    <py_trees.behaviours.Success name="Feature 2" />
+    <py_trees.behaviours.Success name="Feature 3" />
+  </conditional>
+  
+  <!-- Always included node -->
+  <py_trees.behaviours.Success name="Always Included" />
+</py_trees.composites.Selector> 
