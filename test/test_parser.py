@@ -68,6 +68,7 @@ def setup_parser(ros_init):
         "test/data/test_idioms.xml",
         "test/data/test_function_parse.xml",
         "test/data/test_subtree_main.xml",
+        "test/data/test_arg_substitution_main.xml",
     ],
 )
 def test_tree_parser(setup_parser, tree_file):
@@ -105,5 +106,24 @@ def test_subtree_cascaded_args(setup_parser):
         elif isinstance(child, py_trees.behaviours.Periodic):
             assert child.name == "Flip Eggs"
             assert child.period == 2
+        else:
+            assert False, f"Unexpected child node type {type(child)}"  # noqa
+
+
+def test_arg_substitution_within_strings(setup_parser):
+    """Test that argument substitution within strings works as expected."""
+    tree_file = "test/data/test_arg_substitution_main.xml"
+    root = setup_parser(tree_file)
+
+    assert root.name == "Argument Substitution Test"
+
+    for child in root.children:
+        if isinstance(child, py_trees.behaviours.Running):
+            assert child.name == "prefix_value1_suffix"
+        elif isinstance(child, py_trees.behaviours.Success):
+            assert child.name == "task_value2_complete"
+        elif isinstance(child, py_trees.behaviours.Periodic):
+            assert child.name == "periodic_value3"
+            assert child.period == 3
         else:
             assert False, f"Unexpected child node type {type(child)}"  # noqa

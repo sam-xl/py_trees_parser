@@ -188,6 +188,14 @@ and then inside the subtree
 </py_trees.composites.Sequence>
 ```
 
+Additionally, arguments can be embedded within strings for partial substitution using the same syntax:
+
+```xml
+<py_trees.composites.Sequence name="Embedded Arg Tutorial">
+    <py_trees.behaviors.Success name="prefix_${foo}_suffix" />
+</py_trees.composites.Sequence>
+```
+
 Furthermore, one can cascade arguments down subtrees using the following syntax:
 
 ```xml
@@ -204,7 +212,7 @@ and in subtree1
 <subtree
   name="my_subtree2"
   include="/location/of/subtree2.xml" >
-  <arg name="baz" value=${foo}
+  <arg name="baz" value="${foo}" />
 </subtree>
 ```
 
