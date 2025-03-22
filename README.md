@@ -216,6 +216,21 @@ and finally in subtree2
 </py_trees.composites.Sequence>
 ```
 
+### Conditionals
+
+Conditionals are a method for choosing which xml nodes should be included in the
+final tree. If a condition evaluates to true then the element is included in the
+final tree otherwise it is not. Conditionals can be used with any element of a
+behavior tree and is represented by the `if` keyword and are written
+like
+
+```xml
+  <py_trees.behaviours.Success name="Feature 1" if="True"/>
+  <py_trees.behaviours.Success name="Feature 2" if="False"/>
+  <py_trees.behaviours.Success name="Feature 3" if="${my_arg1} < 5"/>
+  <py_trees.behaviours.Success name="Feature 4" if="'${my_arg2}' == 'simulation'"/>
+```
+
 ### Logging
 
 By default the parser uses `rclpy.logging` module to log messages. However, if this is not available

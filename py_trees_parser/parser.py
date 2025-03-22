@@ -378,6 +378,9 @@ class BTParser:
         name = node_attribs["name"]
         del node_attribs["name"]
 
+        if "if" in node_attribs:
+            del node_attribs["if"]
+
         self.logger.debug(f"Found {node_type}")
 
         # name is a special attribute that is handled separately
@@ -453,6 +456,19 @@ class BTParser:
 
         return None
 
+    def _condition(self, condition):
+        if condition is None:
+            return True
+
+        try:
+            # Safely evaluate the condition
+            result = eval(condition, {"__builtins__": {}}, {})
+            self.logger.debug(f"Condition result: {result}")
+            return bool(result)
+        except Exception as ex:
+            self.logger.error(f"Error evaluating condition '{condition}': {ex}")
+            raise ValueError(f"Error evaluating condition '{condition}'") from ex
+
     def _build_tree(
         self,
         xml_node: Element,
@@ -503,6 +519,9 @@ class BTParser:
         children = list()
         for child_xml in xml_node:
             self._process_args(child_xml, args)
+            if_cond = child_xml.attrib.get("if")
+            if not self._condition(if_cond):
+                continue
             child = self._build_tree(child_xml, args)
             children.append(child)
 
