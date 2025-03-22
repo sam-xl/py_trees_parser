@@ -130,3 +130,14 @@ def test_arg_substitution_within_strings(setup_parser):
             assert child.period == 3
         else:
             assert False, f"Unexpected child node type {type(child)}"  # noqa
+
+
+def test_bool(setup_parser):
+    """Test that True, true, False, or false are evaluated as booleans."""
+    tree_file = "test/data/test_bool.xml"
+    root = setup_parser(tree_file)
+
+    assert root.name == "No Memory"
+    assert root.memory is False
+    assert root.children[0].name == "Memory"
+    assert root.children[0].memory
