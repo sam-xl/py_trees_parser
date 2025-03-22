@@ -462,6 +462,7 @@ class BTParser:
 
         try:
             # Safely evaluate the condition
+            self.logger.debug(f"Found conditional: {condition}")
             result = eval(condition, {"__builtins__": {}}, {})
             self.logger.debug(f"Condition result: {result}")
             return bool(result)
