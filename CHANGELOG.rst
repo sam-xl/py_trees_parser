@@ -1,6 +1,11 @@
 Changelog for package py_trees_parser
 
 .. This is only a rough description of the main changes of the repository
+0.6.1 (2025-03-21)
+------------------
+* Add inline argument substitution
+* Add conditionals
+
 0.6.0 (2025-01-24)
 ------------------
 * Split py_trees_parser out into its own repo
