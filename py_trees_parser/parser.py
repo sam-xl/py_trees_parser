@@ -29,8 +29,12 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 
 import py_trees
-import rclpy
-from rclpy import logging
+
+try:
+    import rclpy
+    from rclpy import logging
+except ModuleNotFoundError:
+    import logging
 
 
 class BTParseError(Exception):
@@ -169,20 +173,30 @@ class BTParser:
     Args:
     ----
         file (str): The XML file to parse.
-        log_level (logging.LoggingSeverity, optional): The logging level for the parser.
+        log_level (optional): The logging level for the parser. This can be
+                              rclpy.logging.LoggingSeverity or the log levels from logging.
+                              Default logging level is INFO.
 
     """
 
     def __init__(
         self,
         file: str,
-        log_level: logging.LoggingSeverity = logging.LoggingSeverity.INFO,
+        log_level: rclpy.logging.LoggingSeverity | int | None = None,
     ):
         """Initialize the BTParser."""
         self.file = file
 
-        self.logger = rclpy.logging.get_logger("BTParser")
-        self.logger.set_level(log_level)
+        try:
+            self.logger = logging.get_logger("BTParser")
+            self.logger.set_level(
+                log_level if log_level is not None else logging.LoggingSeverity.INFO
+            )
+        except AttributeError:
+            formatter = logging.Formatter("[%(levelname)s] [%(name)s] [%(created)f]: %(message)s")
+            self.logger = logging.getLogger("BTParser")
+            self.logger.setLevel(log_level if log_level is not None else logging.INFO)
+            self.logger.setFormatter(formatter)
 
     def _get_handle(self, value: str) -> tuple[str, Any]:
         """
