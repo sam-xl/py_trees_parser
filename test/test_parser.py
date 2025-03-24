@@ -53,7 +53,7 @@ def setup_parser(ros_init):
             root = parser.parse()
             py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
         except Exception as ex:
-            assert False, f"parse raised an exception {ex}"
+            assert False, f"parse raised an exception {ex}"  # noqa
 
         return root
 
