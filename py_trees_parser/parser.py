@@ -59,6 +59,22 @@ def is_float(value: str) -> bool:
         return False
 
 
+def is_bool(value: str) -> bool:
+    """
+    Check if a string is a boolean type, i.e. True or False.
+
+    Args:
+    ----
+        value: The string to check.
+
+    Returns:
+    -------
+        True if the string is "true", "True", "false", or "False", False otherwise.
+
+    """
+    return value.lower() == "true" or value.lower() == "false"
+
+
 def is_code(value: str) -> bool:
     """
     Check if a string is intended to be code.
@@ -244,6 +260,8 @@ class BTParser:
             value = int(value)
         elif is_float(value):
             value = float(value)
+        elif is_bool(value):
+            value = value.lower() == "true"
         elif is_code(value):
             value = self._parse_code(value)
 
