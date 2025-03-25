@@ -1,0 +1,5 @@
+<py_trees.composites.Sequence name="No Memory" memory="False">
+  <py_trees.composites.Sequence name="Memory" memory="True">
+    <py_trees.behaviours.Success name="Feature 1" />
+  </py_trees.composites.Sequence>
+</py_trees.composites.Sequence>

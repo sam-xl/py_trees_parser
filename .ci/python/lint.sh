@@ -19,8 +19,7 @@ export PATH=$PATH:$HOME/.local/bin
 pip install ruff==0.9.2
 
 # lint the code (replaces flake8, isort, etc.)
-ruff check .
+ruff check --diff .
 
 # check if formatting is correct (~ equivalent of `black format --check`)
-ruff format --check .
-
+ruff format --diff .
