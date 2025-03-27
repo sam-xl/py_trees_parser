@@ -67,6 +67,14 @@ Additionally, it is possible to create a [subtree](#sub-trees), where a subtree 
 containing a complete behavior tree. This xml file can be included in other xml
 files and therefore allows for complete modularity of trees.
 
+### Parallel Policies
+
+When running a `py_trees.composites.Parallel` you can set a policy. For the
+`SuccessOnAll` and `SuccessOnOne` everything is straight forward, but for
+`SuccessOnSelected` one specifies the `children` as a list of `names`. Those
+names must be the names as provided in children that follow, as this is how
+the parser will build the parallel policy. See the example in [basic usage](#basic-usage).
+
 ### Basic Usage
 
 To use the Behavior Tree Parser, follow these steps:
@@ -75,7 +83,9 @@ Create an XML file that represents your behavior tree. The XML structure should
 define the nodes and their attributes. It should be similar to the following:
 
 ```xml
-<py_trees.composites.Parallel name="TutorialOne" synchronise="False">
+<py_trees.composites.Parallel
+  name="TutorialOne"
+  policy="$(py_trees.ParallelPolicy.SuccessOnSelected(children=[Tasks], synchronise=False))">
     <py_trees.composites.Sequence name="Topics2BB" memory="False">
         <py_trees_ros.battery.ToBlackboard name="Battery2BB"
             topic_name="/battery/state"
