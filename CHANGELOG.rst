@@ -1,6 +1,10 @@
 Changelog for package py_trees_parser
 
 .. This is only a rough description of the main changes of the repository
+0.7.0 (2025-03-28)
+------------------
+* Add support for SuccessOnSelected parallel policy
+
 0.6.1 (2025-03-21)
 ------------------
 * Add inline argument substitution
