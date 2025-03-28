@@ -95,14 +95,10 @@ following code:
 ```python
 from py_trees_parser import BTParser
 import py_trees
-from rclpy import logging
-
-logger = logging.get_logger('parser')
-logger.set_level(logging.LoggingSeverity.DEBUG)
 
 # Parse the XML file and create the behavior tree:
 xml_file = "behavior_tree.xml"
-parser = BTParser(xml_file, logger)
+parser = BTParser(xml_file)
 behavior_tree = parser.parse()
 ```
 
@@ -219,3 +215,37 @@ and finally in subtree2
     <py_trees.behaviors.Success name="${baz}" />
 </py_trees.composites.Sequence>
 ```
+
+### Logging
+
+By default the parser uses `rclpy.logging` module to log messages. However, if this is not available
+it falls back to the python `logging` module. The user need not intervene to change the logger as the
+parser will determine which logger to use on its own.
+
+#### Logging Level
+
+If you would like to set the logging level you will need to know which logger is available. If you are
+using ROS2 then the logger will be `rclpy.logging` and the log level can be set in the following way
+
+```python
+import rclpy
+
+from py_trees_parser import BTParser
+
+xml_file = "behavior_tree.xml"
+parser = BTParser(xml_file, log_level=rclpy.logging.LoggingSeverity.DEBUG)
+```
+
+On the other hand if you are not using ROS2 then the log level can be set in the following way
+
+```python
+import logging
+
+from py_trees_parser import BTParser
+
+xml_file = "behavior_tree.xml"
+parser = BTParser(xml_file, log_level=logging.DEBUG)
+```
+
+- For details on ROS2 log levels see [here](https://docs.ros2.org/foxy/api/rclpy/api/logging.html).
+- For details on python log levels see [here](https://docs.python.org/3/library/logging.html#logging-levels)
