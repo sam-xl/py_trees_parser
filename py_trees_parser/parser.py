@@ -159,7 +159,7 @@ def handle_success_on_selected(node_attribs: dict) -> tuple[list[str] | None, bo
 
     Returns:
     -------
-        A tuple containing the list of children to be selected and the synchonise parameter.
+        A tuple containing the list of children to be selected and the synchronise parameter.
 
     """
     on_selected = None
@@ -172,8 +172,6 @@ def handle_success_on_selected(node_attribs: dict) -> tuple[list[str] | None, bo
         positional_args = [ast.unparse(arg) for arg in call_node.args]
         keyword_args = {key.arg: ast.unparse(key.value) for key in call_node.keywords}
 
-        children_arg = None
-        synchronise = None
         if len(positional_args) == 2:
             children_arg = positional_args[0]
             synchronise = positional_args[1].lower() == "true"
@@ -189,6 +187,7 @@ def handle_success_on_selected(node_attribs: dict) -> tuple[list[str] | None, bo
         if children_arg is None:
             raise ValueError(f"No children found in SuccessOnSelected: {policy[2:-1]}")
 
+        # synchronise wasn't set so set it to the default value
         synchronise = True if synchronise is None else synchronise
 
         start = children_arg.find("[")
