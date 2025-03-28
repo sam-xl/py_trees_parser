@@ -378,6 +378,7 @@ class BTParser:
         name = node_attribs["name"]
         del node_attribs["name"]
 
+        # creating node, so we've handle the condition already
         if "if" in node_attribs:
             del node_attribs["if"]
 
