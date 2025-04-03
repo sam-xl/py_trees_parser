@@ -47,13 +47,13 @@ def setup_parser(ros_init):
     """Setup the parser and test file processing."""
 
     def _setup(tree_file):
-        xml = os.path.join(SHARE_DIR, tree_file)
+        xml = os.path.join(SHARE_DIR, "test", "data", tree_file)
         parser = BTParser(xml, log_level=rclpy.logging.LoggingSeverity.DEBUG)
         try:
             root = parser.parse()
             py_trees_ros.trees.BehaviourTree(root=root, unicode_tree_debug=True)
         except Exception as ex:
-            assert False, f"parse raised an exception {ex}"
+            assert False, f"parse raised an exception {ex}"  # noqa
 
         return root
 
@@ -63,12 +63,12 @@ def setup_parser(ros_init):
 @pytest.mark.parametrize(
     "tree_file",
     [
-        "test/data/test1.xml",
-        "test/data/test6.xml",
-        "test/data/test_idioms.xml",
-        "test/data/test_function_parse.xml",
-        "test/data/test_subtree_main.xml",
-        "test/data/test_arg_substitution_main.xml",
+        "test1.xml",
+        "test6.xml",
+        "test_idioms.xml",
+        "test_function_parse.xml",
+        "test_subtree_main.xml",
+        "test_arg_substitution_main.xml",
     ],
 )
 def test_tree_parser(setup_parser, tree_file):
@@ -78,7 +78,7 @@ def test_tree_parser(setup_parser, tree_file):
 
 def test_subtree_and_args(setup_parser):
     """Test that subtree arguments are working as expected."""
-    tree_file = "test/data/test_args.xml"
+    tree_file = "test_args.xml"
     root = setup_parser(tree_file)
 
     assert root.name == "Subtree Selector"
@@ -95,7 +95,7 @@ def test_subtree_and_args(setup_parser):
 
 def test_subtree_cascaded_args(setup_parser):
     """Test that cascaded args through subtrees and nested subtrees is working as expected."""
-    tree_file = "test/data/test_cascade_args.xml"
+    tree_file = "test_cascade_args.xml"
     root = setup_parser(tree_file).children[0]
 
     assert root.name == "Subtree Selector"
@@ -112,7 +112,7 @@ def test_subtree_cascaded_args(setup_parser):
 
 def test_arg_substitution_within_strings(setup_parser):
     """Test that argument substitution within strings works as expected."""
-    tree_file = "test/data/test_arg_substitution_main.xml"
+    tree_file = "test_arg_substitution_main.xml"
     root = setup_parser(tree_file)
 
     assert root.name == "Argument Substitution Test"
@@ -134,10 +134,37 @@ def test_arg_substitution_within_strings(setup_parser):
 
 def test_bool(setup_parser):
     """Test that True, true, False, or false are evaluated as booleans."""
-    tree_file = "test/data/test_bool.xml"
+    tree_file = "test_bool.xml"
     root = setup_parser(tree_file)
 
     assert root.name == "No Memory"
     assert root.memory is False
     assert root.children[0].name == "Memory"
     assert root.children[0].memory
+
+
+def test_conditionals(setup_parser):
+    """Test that conditionals include nodes as expected."""
+    tree_file = "test_conditional_main.xml"
+    root = setup_parser(tree_file)
+
+    assert root.name == "Conditional Test"
+
+    children = root.children
+    assert children[0].name == "Advanced Mode Feature"
+    assert children[1].name == "Non-Basic Mode Feature"
+    assert children[2].name == "High Level Feature"
+    assert children[3].name == "Debug Feature"
+    assert children[4].name == "Conditional Selector"
+    assert children[5].name == "Included Subtree"
+    assert children[6].name == "Always Included"
+
+    grand_children = children[4].children
+    assert grand_children[0].name == "Feature 1"
+    assert grand_children[1].name == "Feature 2"
+    assert grand_children[2].name == "Feature 3"
+
+    grand_children = children[5].children
+    assert grand_children[0].name == "Subtree Feature 1"
+    assert grand_children[1].name == "Subtree Feature 2"
+    assert grand_children[2].name == "Subtree Feature 3"

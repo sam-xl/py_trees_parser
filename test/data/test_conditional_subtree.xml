@@ -1,0 +1,7 @@
+  <!-- Multiple children in a conditional -->
+<py_trees.composites.Sequence name="${name}" memory="True">
+  <py_trees.behaviours.Success name="${feature_1}" />
+  <py_trees.behaviours.Success name="${feature_2}" />
+  <py_trees.behaviours.Success name="${feature_3}" />
+</py_trees.composites.Sequence>
+

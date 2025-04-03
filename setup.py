@@ -20,7 +20,7 @@ package_name = "py_trees_parser"
 
 setup(
     name=package_name,
-    version="0.6.0",
+    version="0.6.1",
     packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/ament_index/resource_index/packages", [os.path.join("resource", package_name)]),
