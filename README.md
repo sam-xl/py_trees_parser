@@ -218,7 +218,7 @@ and finally in subtree2
 
 ### Conditionals
 
-Conditionals are a method for choosing which xml nodes should be included in the
+A conditionals allows one to choose which xml nodes should be included in the
 final tree. If a condition evaluates to true then the element is included in the
 final tree otherwise it is not. Conditionals can be used with any element of a
 behavior tree and is represented by the `if` keyword and are written
