@@ -116,6 +116,91 @@ def is_arg(value: str) -> bool:
     return value.startswith("${") and value.endswith("}")
 
 
+def extract_params(func: str) -> ast.Call | None:
+    """
+    Extract a list of parameters from a string representing a python function.
+
+    Args:
+    ----
+       func (str): string representing python function.
+
+    Returns:
+    -------
+       list(str): list of parameters found.
+
+    Raises:
+    ------
+       ValueError: if the function call is malformed.
+
+    """
+    try:
+        # Parse the string into an AST
+        tree = ast.parse(func)
+    except SyntaxError as ex:
+        raise ValueError(f"Couldn't read function parameters: {func}") from ex
+
+    # Find the first function call node in the AST
+    call_node = None
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            call_node = node
+            break
+
+    return call_node
+
+
+def handle_success_on_selected(node_attribs: dict) -> tuple[list[str] | None, bool]:
+    """
+    Handle the special SuccessOnSelected parameter.
+
+    Args:
+    ----
+        node_attribs (dict): The attributes of the XML node.
+
+    Returns:
+    -------
+        A tuple containing the list of children to be selected and the synchronise parameter.
+
+    """
+    on_selected = None
+    synchronise = None
+    if (policy := node_attribs.get("policy")) is not None and "SuccessOnSelected" in policy:
+        call_node = extract_params(policy[2:-1])
+        if call_node is None:
+            raise ValueError(f"Missing parameters for 'SuccessOnSelected': {policy[2:-1]}")
+
+        positional_args = [ast.unparse(arg) for arg in call_node.args]
+        keyword_args = {key.arg: ast.unparse(key.value) for key in call_node.keywords}
+
+        if len(positional_args) == 2:
+            children_arg = positional_args[0]
+            synchronise = positional_args[1].lower() == "true"
+        elif len(positional_args) == 1:
+            children_arg = positional_args[0]
+
+        for key, value in keyword_args.items():
+            if key == "children":
+                children_arg = value
+            elif key == "synchronise":
+                synchronise = value.lower() == "true"
+
+        if children_arg is None:
+            raise ValueError(f"No children found in SuccessOnSelected: {policy[2:-1]}")
+
+        # synchronise wasn't set so set it to the default value
+        synchronise = True if synchronise is None else synchronise
+
+        start = children_arg.find("[")
+        end = children_arg.find("]", start + 1)
+        if end == -1:
+            raise ValueError(f"Malformed list of children in SuccessOnSelected: {policy[2:-1]}")
+        on_selected = [x.strip() for x in children_arg[start + 1 : end].split(",")]
+
+        del node_attribs["policy"]
+
+    return on_selected, synchronise
+
+
 def extract_modules(ast_tree: ast.AST) -> list[str]:
     """
     Extract module and submodules from the input AST.
@@ -384,6 +469,9 @@ class BTParser:
 
         self.logger.debug(f"Found {node_type}")
 
+        # handle SuccessOnSelected separately
+        on_selected, synchronise = handle_success_on_selected(node_attribs)
+
         # name is a special attribute that is handled separately
         node_attribs = self._convert_attribs(node_attribs)
 
@@ -391,22 +479,38 @@ class BTParser:
         if isinstance(obj, types.FunctionType):
             parameters = inspect.signature(obj).parameters
             if "behaviour" in parameters:
+                self.logger.debug("Found behaviour in parameters")
                 node = obj(name=name, behaviour=children[0], **node_attribs)
             elif "subtrees" in parameters:
+                self.logger.debug("Found subtrees in parameters")
                 node = obj(name=name, subtrees=children, **node_attribs)
             elif "tasks" in parameters:
+                self.logger.debug("Found tasks in parameters")
                 node = obj(name=name, tasks=children, **node_attribs)
             elif len(children) == 0:
+                self.logger.debug("No children provided, assuming a behavior")
                 node = obj(name=name, **node_attribs)
             else:
                 self.logger.error(f"Unknown node type {node_type}")
                 raise BTParseError(f"Unknown node type {node_type}")
-
         elif len(children) == 0:
+            self.logger.debug("No children provided, assuming a behavior")
             node = obj(name=name, **node_attribs)
         elif issubclass(obj, py_trees.decorators.Decorator):
-            self.logger.debug(f"{node_attribs = }")
+            self.logger.debug(f"Found decorator: {node_attribs = }")
             node = obj(name=name, child=children[0], **node_attribs)
+        elif on_selected is not None:
+            self.logger.debug("Found SuccessOnSelected in parameters")
+
+            selection = [child for child in children if child.name in on_selected]
+
+            node = obj(
+                name=name,
+                children=children,
+                policy=py_trees.common.ParallelPolicy.SuccessOnSelected(
+                    children=selection, synchronise=synchronise
+                ),
+            )
         else:
             node = obj(name=name, children=children, **node_attribs)
 
@@ -525,6 +629,7 @@ class BTParser:
             if not self._condition(if_cond):
                 continue
             child = self._build_tree(child_xml, args)
+
             children.append(child)
 
         # build the actual node

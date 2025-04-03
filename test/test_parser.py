@@ -20,6 +20,7 @@ instances are valid.
 """
 
 import os
+from xml.etree import ElementTree
 
 import py_trees
 import py_trees_ros
@@ -27,7 +28,7 @@ import pytest
 import rclpy
 from ament_index_python.packages import get_package_share_directory
 
-from py_trees_parser.parser import BTParser
+from py_trees_parser.parser import BTParser, handle_success_on_selected
 
 SHARE_DIR = get_package_share_directory("py_trees_parser")
 
@@ -168,3 +169,73 @@ def test_conditionals(setup_parser):
     assert grand_children[0].name == "Subtree Feature 1"
     assert grand_children[1].name == "Subtree Feature 2"
     assert grand_children[2].name == "Subtree Feature 3"
+
+
+@pytest.mark.parametrize(
+    "child_key, synch_key, children, synch",
+    [
+        (True, True, ["feature_1"], True),
+        (True, True, ["Feature_2"], False),
+        (True, True, ["Feature_1", "Feature_2"], True),
+        (True, True, ["feature_1"], True),
+        (True, True, ["Feature_2"], False),
+        (False, True, ["feature_1"], True),
+        (False, True, ["Feature_2"], False),
+        (False, True, ["Feature_1", "Feature_2"], True),
+        (False, True, ["feature_1"], True),
+        (False, True, ["Feature_2"], False),
+        (False, False, ["feature_1"], True),
+        (False, False, ["Feature_2"], False),
+        (False, False, ["Feature_1", "Feature_2"], True),
+        (False, False, ["feature_1"], True),
+        (False, False, ["Feature_2"], False),
+        (True, False, ["feature_1"], None),
+        (True, False, ["Feature_2"], None),
+        (True, False, ["Feature_1", "Feature_2"], None),
+        (True, False, ["feature_1"], None),
+        (True, False, ["Feature_2"], None),
+        (True, False, ["Feature_1", "Feature_2"], None),
+    ],
+)
+def test_SuccessOnSelected_parsing(child_key, synch_key, children, synch):
+    """Test that we can parse SuccessOnSelected parameters."""
+    child_str = f"{'children=' if child_key else ''}[{', '.join(children)}]"
+
+    # choose to include synchronise parameter or not
+    if synch is not None:
+        synch_str = f"{'synchronise=' if synch_key else ''}{str(synch)}"
+        parallel_policy = (
+            f"py_trees.common.ParallelPolicy.SuccessOnSelected({child_str}, {synch_str})"
+        )
+    else:
+        synch = True
+        parallel_policy = f"py_trees.common.ParallelPolicy.SuccessOnSelected({child_str})"
+
+    xml_str = f"<py_trees.composites.Parallel name='TestParallel' policy='$({parallel_policy})' />"
+    node = ElementTree.fromstring(xml_str)
+
+    on_selected, synchronise = handle_success_on_selected(node.attrib)
+
+    for selected in on_selected:
+        assert selected in children
+
+    assert synchronise is synch
+
+    assert "policy" not in node.attrib
+
+
+def test_ParallelPolicy(setup_parser):
+    """Test parallel policies are handled correctly."""
+    tree_file = "test_parallel_policy.xml"
+    root = setup_parser(tree_file)
+
+    assert root.name == "ParallelPolicy Test"
+    for child in root.children:
+        if child.name == "SuccessOnAll":
+            assert isinstance(child.policy, py_trees.common.ParallelPolicy.SuccessOnAll)
+        elif child.name == "SuccessOnOne":
+            assert isinstance(child.policy, py_trees.common.ParallelPolicy.SuccessOnOne)
+        elif child.name == "SuccessOnSelected":
+            assert isinstance(child.policy, py_trees.common.ParallelPolicy.SuccessOnSelected)
+        else:
+            assert False, "Received unexpected parallel policy"  # noqa
