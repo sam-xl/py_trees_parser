@@ -1,4 +1,4 @@
-<py_trees.composites.Selector name="Conditional Test" memory="$(False)">
+<py_trees.composites.Selector name="Conditional Test" memory="False">
   <!-- Basic condition: equal comparison -->
   <py_trees.behaviours.Success name="Advanced Mode Feature" if="'${mode}' == 'advanced'" />
 
@@ -13,17 +13,31 @@
   <py_trees.behaviours.Success name="Not Debug Feature" if="not ${enable_debug}"/>
 
   <!-- Multiple children in a conditional -->
-  <py_trees.composites.Sequence name="Conditional Selector" if="${include_all}" memory="$(True)">
+  <py_trees.composites.Sequence name="Conditional Selector" if="${include_all}" memory="True">
     <py_trees.behaviours.Success name="Feature 1" />
     <py_trees.behaviours.Success name="Feature 2" />
     <py_trees.behaviours.Success name="Feature 3" />
   </py_trees.composites.Sequence>
 
-  <py_trees.composites.Sequence name="Not Conditional Selector" if="not ${include_all}" memory="$(True)">
+  <py_trees.composites.Sequence name="Not Conditional Selector" if="not ${include_all}" memory="True">
     <py_trees.behaviours.Success name="Feature 4" />
     <py_trees.behaviours.Success name="Feature 5" />
     <py_trees.behaviours.Success name="Feature 6" />
   </py_trees.composites.Sequence>
+
+  <subtree name="Included Subtree" if="${include_all}" include="$(ament_index_python.get_package_share_directory('py_trees_parser') + '/test/data/test_conditional_subtree.xml')" >
+    <arg name="name" value="Included Subtree" />
+    <arg name="feature_1" value="Subtree Feature 1"/>
+    <arg name="feature_2" value="Subtree Feature 2"/>
+    <arg name="feature_3" value="Subtree Feature 3"/>
+  </subtree>
+
+  <subtree name="Not Included Subtree" if="not ${include_all}" include="$(ament_index_python.get_package_share_directory('py_trees_parser') + '/test/data/test_conditional_subtree.xml')" >
+    <arg name="name" value="Included Subtree" />
+    <arg name="feature_1" value="Subtree Feature 4"/>
+    <arg name="feature_2" value="Subtree Feature 5"/>
+    <arg name="feature_3" value="Subtree Feature 6"/>
+  </subtree>
 
   <!-- Always included node -->
   <py_trees.behaviours.Success name="Always Included" />

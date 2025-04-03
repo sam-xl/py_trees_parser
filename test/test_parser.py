@@ -156,9 +156,15 @@ def test_conditionals(setup_parser):
     assert children[2].name == "High Level Feature"
     assert children[3].name == "Debug Feature"
     assert children[4].name == "Conditional Selector"
-    assert children[5].name == "Always Included"
+    assert children[5].name == "Included Subtree"
+    assert children[6].name == "Always Included"
 
-    children = children[4].children
-    assert children[0].name == "Feature 1"
-    assert children[1].name == "Feature 2"
-    assert children[2].name == "Feature 3"
+    grand_children = children[4].children
+    assert grand_children[0].name == "Feature 1"
+    assert grand_children[1].name == "Feature 2"
+    assert grand_children[2].name == "Feature 3"
+
+    grand_children = children[5].children
+    assert grand_children[0].name == "Subtree Feature 1"
+    assert grand_children[1].name == "Subtree Feature 2"
+    assert grand_children[2].name == "Subtree Feature 3"
