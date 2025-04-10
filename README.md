@@ -73,7 +73,8 @@ When running a `py_trees.composites.Parallel` you can set a policy. For the
 `SuccessOnAll` and `SuccessOnOne` everything is straight forward, but for
 `SuccessOnSelected` one specifies the `children` as a list of `names`. Those
 names must be the names as provided in children that follow, as this is how
-the parser will build the parallel policy. See the example in [basic usage](#basic-usage).
+the parser will build the parallel policy. The names should be unquoted. See
+the example in [basic usage](#basic-usage).
 
 ### Basic Usage
 

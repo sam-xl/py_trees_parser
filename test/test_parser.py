@@ -237,5 +237,7 @@ def test_ParallelPolicy(setup_parser):
             assert isinstance(child.policy, py_trees.common.ParallelPolicy.SuccessOnOne)
         elif child.name == "SuccessOnSelected":
             assert isinstance(child.policy, py_trees.common.ParallelPolicy.SuccessOnSelected)
+            assert len(child.policy.children) != 0
+            assert child.policy.children[0].name == "Feature5"
         else:
             assert False, "Received unexpected parallel policy"  # noqa

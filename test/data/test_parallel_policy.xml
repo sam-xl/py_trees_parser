@@ -12,7 +12,7 @@
   </py_trees.composites.Parallel>
   <py_trees.composites.Parallel
     name="SuccessOnSelected"
-    policy="$(py_trees.common.ParallelPolicy.SuccessOnSelected(['Feature5']))" >
+    policy="$(py_trees.common.ParallelPolicy.SuccessOnSelected([Feature5]))" >
     <py_trees.behaviours.Success name="Feature4" />
     <py_trees.behaviours.Success name="Feature5" />
   </py_trees.composites.Parallel>
