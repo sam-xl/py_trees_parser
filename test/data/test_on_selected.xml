@@ -1,0 +1,13 @@
+<py_trees.composites.Parallel name="Move and Scan"
+  policy="$(py_trees.common.ParallelPolicy.SuccessOnSelected([__mera_va_ue__check_], synchronise=False))">
+  <py_trees.behaviours.SetBlackboardVariable
+    name="Write camera type"
+    variable_name="/perception/camera"
+    variable_value="rgb"
+    overwrite="true"
+  />
+  <py_trees.behaviours.CheckBlackboardVariableValue
+    name="¢@mera va!ue,_check?"
+    check="$(py_trees.common.ComparisonExpression('/perception/camera', value='rgb', operator=operator.is_))"
+  />
+</py_trees.composites.Parallel>
