@@ -224,7 +224,8 @@ def test_SuccessOnSelected_parsing(child_key, synch_key, children, synch):
     assert "policy" not in node.attrib
 
 
-def test_SuccessOnSelected_speacial_chars_in_name(setup_parser):
+def test_SuccessOnSelected_special_chars_in_name(setup_parser):
+    """Test SuccessOnSelected can handle special characters correctly."""
     tree_file = "test_on_selected.xml"
     root = setup_parser(tree_file)
     assert isinstance(root.policy, py_trees.common.ParallelPolicy.SuccessOnSelected)
