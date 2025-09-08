@@ -502,11 +502,17 @@ class BTParser:
         elif on_selected is not None:
             self.logger.debug("Found SuccessOnSelected in parameters")
 
+            def replace_special(char: str):
+                if char.isalnum():
+                    return char
+
+                self.logger.warning(f"Found special {char} in behavior name, replacing with '_'")
+                return "_"
+
             selection = [
                 child
                 for child in children
-                if "".join(map(lambda char: char if char.isalnum() else "_", child.name))
-                in on_selected
+                if "".join(map(replace_special, child.name)) in on_selected
             ]
             if len(selection) == 0:
                 raise ValueError("List of children for SuccessOnSelected is empty")
