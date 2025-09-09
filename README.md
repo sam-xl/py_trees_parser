@@ -113,6 +113,9 @@ parser = BTParser(xml_file)
 behavior_tree = parser.parse()
 ```
 
+note: The names given to children above would use an underscore, i.e. `_` for
+      any special characters, e.g. " ", "$", "@", "!", etc.
+
 ### Using Your Own Behaviors
 
 The xml parser can use any behavior, whether it is part of `py_trees`, `py_trees_ros`,
@@ -147,7 +150,6 @@ then you would include the behaviors in `my_behavior.py` in the following way:
 
 The path to this can be shortened by including the class in `__init__.py`.
 
-
 ### Sub-Trees
 
 It is possible to include sub-trees in the xml file containing a behavior tree.
@@ -171,6 +173,7 @@ is possible to use python to determine the path like so:
       include="$(os.path.join(ament_index_python.packages.get_package_share_directory('my_package'), 'tree', 'subtree.xml'))" />
 </py_trees.composites.Parallel>
 ```
+
 #### Arguments
 
 It is also possible to use arguments for subtrees. The syntax of which looks like
